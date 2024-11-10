@@ -14,6 +14,7 @@ const CURSO=('./Curso.js')
 const Matricula=('./Matricula.js')
 const Asistencia=('./Asistencia.js')
 const Calificacion=('./Calificacion.js')
+const LOGIN=('./Login.js')
 
 
 
@@ -30,7 +31,8 @@ const db ={
     CURSO,
     Matricula,
     Asistencia,
-    Calificacion
+    Calificacion,
+    LOGIN
     
     
     //agregar si hay mas modelos aqui.

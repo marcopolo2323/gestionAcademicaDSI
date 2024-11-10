@@ -11,6 +11,7 @@ const cursoRouter= require('./cursoRoutes')
 const matriculaRouter= require('./matriculaRoutes')
 const asistenciaRouter= require('./asistenciaRoutes')
 const calificacionRouter= require('./calificacionRoutes')
+const loginRouter = require('./loginRoutes')
 
 
 // Importa el nuevo enrutador de roles// Asegúrate de que esta ruta sea correcta
@@ -30,6 +31,7 @@ router.use('/curso',cursoRouter)
 router.use('/matricula',matriculaRouter)
 router.use('/asistencia',asistenciaRouter)
 router.use('/calificacion',calificacionRouter)
+router.use('/login',loginRouter)
 
 
 
