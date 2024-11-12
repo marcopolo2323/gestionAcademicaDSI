@@ -26,7 +26,7 @@ const Estudiante = sequelize.define('Estudiante', {
         allowNull: false
     },
     apellidos: {
-        type: DataTypes.STRING(100),
+        type: DataTypes.STRING(100), 
         allowNull: false
     },
     fecha_nacimiento: {

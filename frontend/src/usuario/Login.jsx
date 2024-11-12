@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import Axios from "axios";
 import { useNavigate } from "react-router-dom";
  // Importa useNavigate

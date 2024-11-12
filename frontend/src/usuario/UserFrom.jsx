@@ -34,7 +34,7 @@ const UserForm = () => {
                 email: ""
             });
         } catch (err) {
-            setError("Error al agregar el usuario. Intenta nuevamente.");
+            setError("Error al agregar el usuario. Intenta nuevamente ",err);
         }
     };
 
