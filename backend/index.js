@@ -1,4 +1,5 @@
 const server = require('./server')
+const loginRoutes = require('./routes/loginRoutes');
 
 db = require('./models/index')
 

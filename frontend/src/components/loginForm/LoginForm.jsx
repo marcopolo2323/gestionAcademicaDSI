@@ -9,21 +9,34 @@ const LoginForm = () => {
   const setToken = useStore((state) => state.setToken);
   const token = useStore((state) => state.token);
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
+  const handleLogin = async (event) => {
+    event.preventDefault(); // Previene el comportamiento por defecto del formulario
     try {
-      const response = await api.post('/login', { username, password });
-      const { token, user } = response.data;
-      setToken(token);
-      setUser(user);
+        const response = await fetch('http://localhost:5000/api/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ username, password }),
+        });
+
+        if (!response.ok) {
+            throw new Error(`Error en la autenticación: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        // Aquí puedes guardar el usuario y el token en el estado global
+        setUser(data.user);
+        setToken(data.token);
     } catch (error) {
-      console.error('Error de autenticación', error);
+        console.error('Error al realizar la solicitud:', error.message);
+        alert('Error al iniciar sesión. Por favor, intenta de nuevo.'); // Muestra un mensaje al usuario
     }
-  };
+};
 
   useEffect(() => {
     if (token) {
-      window.location.href = '/dashboard';
+      window.location.href = '/dashboard';  // Redirige si el token es válido
     }
   }, [token]);
 
@@ -49,3 +62,4 @@ const LoginForm = () => {
 };
 
 export default LoginForm;
+

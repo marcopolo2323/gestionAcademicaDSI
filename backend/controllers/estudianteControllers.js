@@ -1,59 +1,37 @@
-const Estudiante = require('../models/Estudiante'); // Asegúrate de que el modelo de Estudiante esté definido correctamente
+const bcrypt = require('bcrypt'); // Asegúrate de tener bcrypt instalado
+const Usuario = require('../models/Usuario');
+const Estudiante = require('../models/Estudiante');
 
-// Crea un nuevo estudiante
-const createEstudianteController = async ({ usuario_id, dni, nombres, apellidos, fecha_nacimiento, direccion, telefono, email }) => {
-    try {
-        const newEstudiante = await Estudiante.create({ usuario_id, dni, nombres, apellidos, fecha_nacimiento, direccion, telefono, email });
-        return newEstudiante;
-    } catch (error) {
-        throw new Error(error.message);
-    }
-};
+const registerUserAndStudent = async (data) => {
+    const { username, email, password, dni, nombres, apellidos, fecha_nacimiento, direccion, telefono } = data;
 
-// Obtener todos los estudiantes
-const getAllEstudiantesController = async () => {
     try {
-        const estudiantes = await Estudiante.findAll(); // Obtiene todos los estudiantes
-        return estudiantes;
-    } catch (error) {
-        throw new Error(error.message);
-    }
-};
+        // Hashear la contraseña antes de crear el usuario
+        const passwordHash = await bcrypt.hash(password, 10); // 10 es el número de rondas de salting
 
-// Actualizar un estudiante por ID
-const updatedEstudianteByIdController = async (estudiante_id, estudianteData) => {
-    try {
-        const updatedEstudiante = await Estudiante.findByPk(estudiante_id);
-        if (!updatedEstudiante) {
-            return null; // Retorna null si no se encuentra el estudiante
-        }
-        await updatedEstudiante.update(estudianteData);
-        return updatedEstudiante;
-    } catch (error) {
-        throw new Error(error.message);
-    }
-};
+        // Crear el usuario primero
+        const nuevoUsuario = await Usuario.create({
+            username,
+            email,
+            password_hash: passwordHash // Asegúrate de usar el nombre correcto del campo
+        });
+        const usuarioId = nuevoUsuario.usuario_id; // Obtener el ID del nuevo usuario
 
-// Eliminar un estudiante por ID
-const deleteEstudianteByIdController = async (estudiante_id) => {
-    try {
-        const deletedEstudiante = await Estudiante.destroy({
-            where: { estudiante_id: estudiante_id }
+        // Crear el estudiante usando el usuarioId
+        const newEstudiante = await Estudiante.create({
+            usuario_id: usuarioId,
+            dni,
+            nombres,
+            apellidos,
+            fecha_nacimiento,
+            direccion,
+            telefono
         });
 
-        if (deletedEstudiante === 0) {
-            throw new Error('Estudiante no encontrado');
-        }
-
-        return { message: 'Estudiante eliminado exitosamente' }; // Mensaje de éxito
+        return newEstudiante;
     } catch (error) {
-        throw new Error(`Error al eliminar el estudiante: ${error.message}`);
+        throw new Error(`Error al registrar estudiante: ${error.message}`);
     }
 };
 
-module.exports = {
-    createEstudianteController,
-    getAllEstudiantesController,
-    updatedEstudianteByIdController,
-    deleteEstudianteByIdController
-};
+module.exports = { registerUserAndStudent };

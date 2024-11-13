@@ -1,54 +1,31 @@
 const express = require('express');
 const router = express.Router();
-const {
-    createLoginController,
-    getAllLoginsController,
-    updatedLoginByIdController,
-    deleteLoginByIdController
-} = require('../controllers/loginControllers'); // Asegúrate de que la ruta sea correcta
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
+const User = require('../models/Usuario'); // Supón que tienes un modelo User
 
-// Ruta para crear un nuevo registro de inicio de sesión
-router.post('/logins', async (req, res) => {
-    try {
-        const newLogin = await createLoginController(req.body);
-        res.status(201).json(newLogin); // Retorna el nuevo registro creado
-    } catch (error) {
-        res.status(400).json({ error: error.message }); // Manejo de errores
-    }
-});
+// Ruta para el inicio de sesión de autenticación
+router.post('/login', async (req, res) => {
+    const { username, password } = req.body;
 
-// Ruta para obtener todos los registros de inicio de sesión
-router.get('/logins', async (req, res) => {
     try {
-        const logins = await getAllLoginsController();
-        res.status(200).json(logins); // Retorna la lista de registros
-    } catch (error) {
-        res.status(500).json({ error: error.message }); // Manejo de errores
-    }
-});
-
-// Ruta para actualizar un registro de inicio de sesión por ID
-router.put('/logins/:login_id', async (req, res) => {
-    const { login_id } = req.params;
-    try {
-        const updatedLogin = await updatedLoginByIdController(login_id, req.body);
-        if (!updatedLogin) {
-            return res.status(404).json({ message: 'Registro no encontrado' }); // Si no se encuentra el registro
+        // Busca el usuario en la base de datos
+        const user = await User.findOne({ where: { username } });
+        if (!user) {
+            return res.status(404).json({ message: 'Usuario no encontrado' });
         }
-        res.status(200).json(updatedLogin); // Retorna el registro actualizado
-    } catch (error) {
-        res.status(400).json({ error: error.message }); // Manejo de errores
-    }
-});
 
-// Ruta para eliminar un registro de inicio de sesión por ID
-router.delete('/logins/:login_id', async (req, res) => {
-    const { login_id } = req.params;
-    try {
-        const response = await deleteLoginByIdController(login_id);
-        res.status(200).json(response); // Mensaje de éxito
+        // Verifica la contraseña
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+            return res.status(401).json({ message: 'Credenciales incorrectas' });
+        }
+
+        // Genera el token JWT
+        const token = jwt.sign({ userId: user.id }, 'secretKey', { expiresIn: '1h' });
+        res.json({ token, user });
     } catch (error) {
-        res.status(404).json({ error: error.message }); // Manejo de errores
+        res.status(500).json({ error: error.message });
     }
 });
 

@@ -9,10 +9,9 @@ const Profesor = sequelize.define('Profesor', {
     },
     usuario_id: {
         type: DataTypes.INTEGER,
-        unique: true,
-        allowNull: false,
+        allowNull: false, // Este campo no puede ser nulo
         references: {
-            model: 'USUARIOS', // Nombre de la tabla referenciada
+            model: 'USUARIOS', // Asegúrate de que este modelo exista
             key: 'usuario_id'
         }
     },

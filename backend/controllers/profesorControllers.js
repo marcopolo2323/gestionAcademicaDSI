@@ -1,59 +1,37 @@
-const Profesor = require('../models/Profesor'); // Asegúrate de que el modelo de Profesor esté definido correctamente
+// Ejemplo de un controlador para agregar un profesor
+const Teacher = require('../models/Profesor');  // Ajusta esto a tu modelo de datos
 
-// Crea un nuevo profesor
-const createProfesorController = async ({ usuario_id, dni, nombres, apellidos, especialidad, telefono, email }) => {
+const addTeacher = async (teacherData) => {
     try {
-        const newProfesor = await Profesor.create({ usuario_id, dni, nombres, apellidos, especialidad, telefono, email });
-        return newProfesor;
+      // Verificar que todos los campos necesarios estén presentes
+      if (!teacherData.usuario_id) {
+        throw new Error('El campo usuario_id es obligatorio');
+      }
+      if (!teacherData.dni || teacherData.dni.trim() === '') {
+        throw new Error('El campo DNI es obligatorio');
+      }
+  
+      // Crear un nuevo profesor usando el modelo Teacher
+      const newTeacher = new Teacher({
+        usuario_id: teacherData.usuario_id,
+        dni: teacherData.dni, // Asegúrate de incluir el dni
+        nombres: teacherData.nombres,
+        apellidos: teacherData.apellidos,
+        especialidad: teacherData.especialidad,
+        telefono: teacherData.telefono,
+        // Otros campos que puedas necesitar
+      });
+  
+      // Guardar el profesor en la base de datos
+      await newTeacher.save();
+  
+      // Retornar el profesor recién creado
+      return newTeacher;
     } catch (error) {
-        throw new Error(error.message);
+      console.error('Error al crear el profesor:', error);
+      throw error;  // Lanzar el error para que sea manejado en la ruta
     }
-};
+  };
+  
 
-// Obtener todos los profesores
-const getAllProfesoresController = async () => {
-    try {
-        const profesores = await Profesor.findAll(); // Obtiene todos los profesores
-        return profesores;
-    } catch (error) {
-        throw new Error(error.message);
-    }
-};
-
-// Actualizar un profesor por ID
-const updatedProfesorByIdController = async (profesor_id, profesorData) => {
-    try {
-        const updatedProfesor = await Profesor.findByPk(profesor_id);
-        if (!updatedProfesor) {
-            return null; // Retorna null si no se encuentra el profesor
-        }
-        await updatedProfesor.update(profesorData);
-        return updatedProfesor;
-    } catch (error) {
-        throw new Error(error.message);
-    }
-};
-
-// Eliminar un profesor por ID
-const deleteProfesorByIdController = async (profesor_id) => {
-    try {
-        const deletedProfesor = await Profesor.destroy({
-            where: { profesor_id: profesor_id }
-        });
-
-        if (deletedProfesor === 0) {
-            throw new Error('Profesor no encontrado');
-        }
-
-        return { message: 'Profesor eliminado exitosamente' }; // Mensaje de éxito
-    } catch (error) {
-        throw new Error(`Error al eliminar el profesor: ${error.message}`);
-    }
-};
-
-module.exports = {
-    createProfesorController,
-    getAllProfesoresController,
-    updatedProfesorByIdController,
-    deleteProfesorByIdController
-};
+module.exports = { addTeacher };
