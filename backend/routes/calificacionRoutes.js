@@ -5,7 +5,7 @@ const {
     getAllCalificacionesController,
     updatedCalificacionByIdController,
     deleteCalificacionByIdController
-} = require('../controllers/calificacionControllers'); // Asegúrate de que la ruta sea correcta
+} = require('../controllers/CalificacionControllers'); // Asegúrate de que la ruta sea correcta
 
 // Ruta para crear una nueva calificación
 router.post('/', async (req, res) => {

@@ -1,5 +1,6 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../db');
+const Estudiante = require('./Estudiante'); // Si existe relación con Estudiante
 
 const Calificacion = sequelize.define('Calificacion', {
     calificacion_id: {
@@ -9,7 +10,7 @@ const Calificacion = sequelize.define('Calificacion', {
     },
     matricula_id: {
         type: DataTypes.INTEGER,
-        allowNull: true, // Permitir nulos si no siempre se proporciona una matrícula
+        allowNull: false, // Si la matrícula siempre es necesaria
         references: {
             model: 'MATRICULAS', // Nombre de la tabla referenciada
             key: 'matricula_id'
@@ -17,7 +18,10 @@ const Calificacion = sequelize.define('Calificacion', {
     },
     tipo_evaluacion: {
         type: DataTypes.STRING(50),
-        allowNull: false // No permitir nulos para el tipo de evaluación
+        allowNull: false, // No permitir nulos para el tipo de evaluación
+        validate: {
+            len: [0, 50] // Validación para limitar la longitud del tipo de evaluación
+        }
     },
     nota: {
         type: DataTypes.DECIMAL(5, 2),
@@ -39,6 +43,9 @@ const Calificacion = sequelize.define('Calificacion', {
     tableName: 'CALIFICACIONES', // Asegúrate de que el nombre de la tabla coincida con el de la base de datos
     timestamps: false // Si no tienes columnas de createdAt y updatedAt en tu tabla
 });
+
+// Relación con Estudiante si es necesario
+Calificacion.belongsTo(Estudiante, { foreignKey: 'matricula_id' });
 
 // Exportar el modelo
 module.exports = Calificacion;

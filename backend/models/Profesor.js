@@ -1,5 +1,6 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../db');
+const Usuario = require('./Usuario'); // Importar el modelo Usuario
 
 const Profesor = sequelize.define('Profesor', {
     profesor_id: {
@@ -9,17 +10,17 @@ const Profesor = sequelize.define('Profesor', {
     },
     usuario_id: {
         type: DataTypes.INTEGER,
-        unique: true,
         allowNull: false,
         references: {
-            model: 'USUARIOS', // Nombre de la tabla referenciada
+            model: Usuario, // Referencia directa al modelo Usuario
             key: 'usuario_id'
-        }
+        },
+        unique: true // Asegura que cada profesor esté vinculado a un único usuario
     },
     dni: {
         type: DataTypes.STRING(15),
-        unique: true,
-        allowNull: false
+        allowNull: false,
+        unique: true
     },
     nombres: {
         type: DataTypes.STRING(100),
@@ -41,14 +42,14 @@ const Profesor = sequelize.define('Profesor', {
         type: DataTypes.STRING(100),
         allowNull: true,
         validate: {
-            isEmail: true // Validación para asegurar que el formato del email es correcto
+            isEmail: true // Asegura que el formato de email sea válido
         }
     },
     estado: {
         type: DataTypes.STRING(20),
         defaultValue: 'ACTIVO',
         validate: {
-            isIn: [['ACTIVO', 'INACTIVO', 'LICENCIA']] // Validación para el estado
+            isIn: [['ACTIVO', 'INACTIVO', 'LICENCIA']]
         }
     },
     fecha_registro: {
@@ -56,11 +57,11 @@ const Profesor = sequelize.define('Profesor', {
         defaultValue: DataTypes.NOW
     }
 }, {
-    tableName: 'PROFESORES', // Asegúrate de que el nombre de la tabla coincida con el de la base de datos
-    timestamps: false // Si no tienes columnas de createdAt y updatedAt en tu tabla
+    tableName: 'PROFESORES',
+    timestamps: false
 });
 
-// Definir la relación con el modelo Usuario si es necesario
-Profesor.belongsTo(require('./Usuario'), { foreignKey: 'usuario_id' });
+// Definir la relación con el modelo Usuario
+Profesor.belongsTo(Usuario, { foreignKey: 'usuario_id' });
 
 module.exports = Profesor;

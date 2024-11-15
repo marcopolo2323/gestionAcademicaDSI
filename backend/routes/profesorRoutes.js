@@ -4,7 +4,7 @@ const {
     getAllProfesoresController,
     updatedProfesorByIdController,
     deleteProfesorByIdController
-} = require('../controllers/profesorControllers'); // Asegúrate de que la ruta sea correcta
+} = require('../controllers/ProfesorControllers'); // Asegúrate de que la ruta sea correcta
 
 const router = express.Router();
 

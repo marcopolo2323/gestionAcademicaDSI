@@ -4,7 +4,7 @@ const {
     getAllPlanesEstudioController,
     updatedPlanEstudioByIdController,
     deletePlanEstudioByIdController
-} = require('../controllers/planestudioControllers'); // Asegúrate de que la ruta sea correcta
+} = require('../controllers/PlanestudioControllers'); // Asegúrate de que la ruta sea correcta
 
 const router = express.Router();
 

@@ -1,40 +1,28 @@
-const { Router } = require('express');
-const usuarioRouter = require('./usuarioRoutes');
-const rolesRouter = require('./rolesRoutes'); 
-const rolesusuariosRouter =require('./rolesusuariosRoutes')
-const estudianteRouter= require('./estudianteRoutes')
-const profesorRouter= require('./profesorRoutes')
-const carreraRouter= require('./carreraRoutes')
-const planestudioRouter= require('./planestudioRoutes')
-const materiaRouter= require('./materiaRoutes')
-const cursoRouter= require('./cursoRoutes')
-const matriculaRouter= require('./matriculaRoutes')
-const asistenciaRouter= require('./asistenciaRoutes')
-const calificacionRouter= require('./calificacionRoutes')
-const loginRouter = require('./loginRoutes')
+// routes/index.js
+const express = require('express');
+const router = express.Router();
+const { 
+    AsistenciaControllers, 
+    CalificacionControllers, 
+    CarreraControllers, 
+    CursoControllers,
+    EstudianteControllers,
+    MatriculaControllers,
+    PlanEstudioControllers,
+    ProfesorControllers,
+    RolesControllers,
+    UsuarioControllers
+} = require('../controllers');
 
-
-// Importa el nuevo enrutador de roles// Asegúrate de que esta ruta sea correcta
-
-const router = Router();
-
-// Usa el courseRouter bajo el prefijo '/courses'
-router.use('/usuarios', usuarioRouter);
-router.use('/roles', rolesRouter);
-router.use('/rolesusuarios', rolesusuariosRouter);
-router.use('/estudiante',estudianteRouter)
-router.use('/profesor',profesorRouter)
-router.use('/carrera',carreraRouter)
-router.use('/planestudio',planestudioRouter)
-router.use('/materia',materiaRouter)
-router.use('/curso',cursoRouter)
-router.use('/matricula',matriculaRouter)
-router.use('/asistencia',asistenciaRouter)
-router.use('/calificacion',calificacionRouter)
-router.use('/login',loginRouter)
-
-
-
-
+router.use('/asistencia', require('./AsistenciaRoutes'));
+router.use('/calificacion', require('./CalificacionRoutes'));
+router.use('/carrera', require('./CarreraRoutes'));
+router.use('/curso', require('./CursoRoutes'));
+router.use('/estudiante', require('./EstudianteRoutes'));
+router.use('/matricula', require('./MatriculaRoutes'));
+router.use('/planestudio', require('./PlanestudioRoutes'));
+router.use('/profesor', require('./ProfesorRoutes'));
+router.use('/roles', require('./RolesRoutes'));
+router.use('/usuario', require('./UsuarioRoutes'));
 
 module.exports = router;

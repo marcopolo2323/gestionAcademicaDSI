@@ -1,5 +1,6 @@
-const { DataTypes } = require('sequelize');
+const { DataTypes } = require('sequelize'); 
 const sequelize = require('../db');
+const Usuario = require('./Usuario'); // Importa el modelo Usuario
 
 const Estudiante = sequelize.define('Estudiante', {
     estudiante_id: {
@@ -12,7 +13,7 @@ const Estudiante = sequelize.define('Estudiante', {
         unique: true,
         allowNull: false,
         references: {
-            model: 'USUARIOS', // Nombre de la tabla referenciada
+            model: Usuario, // Referencia directa al modelo Usuario
             key: 'usuario_id'
         }
     },
@@ -60,11 +61,11 @@ const Estudiante = sequelize.define('Estudiante', {
         defaultValue: DataTypes.NOW
     }
 }, {
-    tableName: 'ESTUDIANTES', // Asegúrate de que el nombre de la tabla coincida con el de la base de datos
-    timestamps: false // Si no tienes columnas de createdAt y updatedAt en tu tabla
+    tableName: 'ESTUDIANTES', 
+    timestamps: false 
 });
 
-// Definir la relación con el modelo Usuario si es necesario
-Estudiante.belongsTo(require('./Usuario'), { foreignKey: 'usuario_id' });
+// Define la relación entre Estudiante y Usuario
+Estudiante.belongsTo(Usuario, { foreignKey: 'usuario_id' });
 
 module.exports = Estudiante;

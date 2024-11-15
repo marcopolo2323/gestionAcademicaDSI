@@ -4,7 +4,7 @@ const {
     getAllCursosController,
     updatedCursoByIdController,
     deleteCursoByIdController
-} = require('../controllers/cursoControllers'); // Asegúrate de que la ruta sea correcta
+} = require('../controllers/CursoControllers'); // Asegúrate de que la ruta sea correcta
 
 const router = express.Router();
 

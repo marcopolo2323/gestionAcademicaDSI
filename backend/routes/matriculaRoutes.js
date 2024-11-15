@@ -5,7 +5,7 @@ const {
     getAllMatriculasController,
     updatedMatriculaByIdController,
     deleteMatriculaByIdController
-} = require('../controllers/matriculaControllers'); // Asegúrate de que la ruta sea correcta
+} = require('../controllers/MatriculaControllers'); // Asegúrate de que la ruta sea correcta
 
 // Ruta para crear una nueva matrícula
 router.post('/', async (req, res) => {
