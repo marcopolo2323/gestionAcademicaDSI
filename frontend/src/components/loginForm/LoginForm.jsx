@@ -1,55 +1,36 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import useStore from '../../store/useStore';
-import api from '../../utils/api'; // Aunque no se utiliza, lo dejé por si es necesario más adelante
-import './LoginForm.css'; // Importa el archivo CSS
+import api from '../../utils/api';
 
 const LoginForm = () => {
   // Estados para el formulario
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-
-  // Acceso a la tienda global
   const setUser = useStore((state) => state.setUser);
   const setToken = useStore((state) => state.setToken);
   const token = useStore((state) => state.token);
 
-  // Manejo del envío del formulario
-  const handleLogin = async (event) => {
-    event.preventDefault(); // Previene el comportamiento por defecto del formulario
-
+  const handleLogin = async (e) => {
+    e.preventDefault();
     try {
-      const response = await fetch('http://localhost:5000/api/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ username, password }),
-      });
-
-      if (!response.ok) {
-        throw new Error(`Error en la autenticación: ${response.statusText}`);
-      }
-
-      const data = await response.json();
-      // Guardar el usuario y el token en el estado global
-      setUser(data.user);
-      setToken(data.token);
+      const response = await api.post('/login', { username, password });
+      const { token, user } = response.data;
+      setToken(token);
+      setUser(user);
     } catch (error) {
-      console.error('Error al realizar la solicitud:', error.message);
-      alert('Error al iniciar sesión. Por favor, intenta de nuevo.'); // Mensaje de error al usuario
+      console.error('Error de autenticación', error);
     }
   };
 
-  // Redirección si el token es válido
   useEffect(() => {
     if (token) {
-      window.location.href = '/dashboard'; // Redirige al dashboard
+      window.location.href = '/dashboard';
     }
   }, [token]);
 
   return (
-    <form className="login-form" onSubmit={handleLogin}>
-      <h2>Iniciar Sesión</h2>
+    <form onSubmit={handleLogin}>
       <input 
         type="text" 
         value={username} 
@@ -70,4 +51,3 @@ const LoginForm = () => {
 };
 
 export default LoginForm;
-

@@ -36,7 +36,7 @@ const Estudiante = sequelize.define('Estudiante', {
     direccion: {
         type: DataTypes.STRING(255),
         allowNull: true
-    },
+    }, 
     telefono: {
         type: DataTypes.STRING(20),
         allowNull: true

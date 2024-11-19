@@ -9,7 +9,7 @@ const {
     EstudianteControllers,
     MatriculaControllers,
     PlanEstudioControllers,
-    ProfesorControllers,
+    ProfesorControllers, 
     RolesControllers,
     UsuarioControllers
 } = require('../controllers');
