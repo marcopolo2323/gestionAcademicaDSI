@@ -1,5 +1,6 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../db');
+const Profesor = require('./Profesor'); // Importa el modelo Profesor
 
 const Curso = sequelize.define('Curso', {
     curso_id: {
@@ -7,19 +8,11 @@ const Curso = sequelize.define('Curso', {
         primaryKey: true,
         autoIncrement: true
     },
-    materia_id: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-            model: 'MATERIAS', // Nombre de la tabla referenciada
-            key: 'materia_id'
-        }
-    },
     profesor_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-            model: 'PROFESORES', // Nombre de la tabla referenciada
+            model: Profesor, // Referencia directa al modelo Profesor
             key: 'profesor_id'
         }
     },
@@ -47,13 +40,15 @@ const Curso = sequelize.define('Curso', {
         type: DataTypes.STRING(20),
         defaultValue: 'ACTIVO',
         validate: {
-            isIn: [['ACTIVO', 'INACTIVO', 'FINALIZADO']] // Validación para el estado
+            isIn: [['ACTIVO', 'INACTIVO', 'FINALIZADO']]
         }
     }
 }, {
-    tableName: 'CURSOS', // Asegúrate de que el nombre de la tabla coincida con el de la base de datos
-    timestamps: false // Si no tienes columnas de createdAt y updatedAt en tu tabla
+    tableName: 'CURSOS', 
+    timestamps: false 
 });
 
-// Exportar el modelo
+// Definir relaciones
+Curso.belongsTo(Profesor, { foreignKey: 'profesor_id' });
+
 module.exports = Curso;

@@ -5,7 +5,7 @@ const {
     getAllRolesController,
     updatedRolByIdController,
     deleteRolByIdController
-} = require('../controllers/rolesControllers'); // Asegúrate de que la ruta sea correcta
+} = require('../controllers/RolesControllers'); // Asegúrate de que la ruta sea correcta
 
 const rolesRouter = Router();
 

@@ -5,7 +5,7 @@ const {
     getAllUsuariosController,
     updatedUsuarioByIdController,
     deleteUsuarioByIdController
-} = require('../controllers/usuarioControllers');
+} = require('../controllers/UsuarioControllers');
 
 const usuarioRouter = Router();
 

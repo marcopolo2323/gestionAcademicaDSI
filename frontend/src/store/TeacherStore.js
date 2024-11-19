@@ -3,75 +3,72 @@ import axios from 'axios';
 
 const useTeacherStore = create((set) => ({
   teachers: [],
-
-  // Función para agregar un nuevo profesor
   addTeacher: async (teacher) => {
     try {
-        console.log('Profesor que se va a agregar:', teacher); // Verifica que todos los campos están presentes
-
-        // Verificar si el campo usuario_id está presente en teacher
-        if (!teacher.usuario_id) {
-            console.error('El campo usuario_id es obligatorio');
-            return;
-        }
-
-        if (!teacher.dni) {
-            console.error('El campo dni es obligatorio');
-            return;
-        }
-
-        const response = await axios.post('http://localhost:3001/profesor', teacher, {
-            headers: { 'Content-Type': 'application/json' }
-        });
-
-        // Actualizar el estado de los profesores
-        set((state) => ({
-            teachers: [...state.teachers, response.data],
-        }));
+      const response = await axios.post('http://localhost:3001/profesor', teacher);
+      set((state) => ({
+        teachers: [...state.teachers, response.data],
+      }));
     } catch (error) {
-        console.log('Error al agregar el profesor:', error.response ? error.response.data : error.message);
-    }
-},
-
-
-  // Función para obtener la lista de profesores
-  fetchTeachers: async () => {
-    try {
-      const response = await axios.get('http://localhost:3001/profesor');
-      set({ teachers: response.data });
-    } catch (error) {
-      // Manejo de errores al obtener la lista de profesores
-      console.error('Error al obtener los profesores:', error.message);
+      console.log('Error adding teacher:', error.message);
     }
   },
-
-  // Función para eliminar un profesor
+  fetchTeachers: async () => {
+    set({ isLoading: true, error: null });
+    try {
+      const response = await axios.get('http://localhost:3001/profesor');
+      set({ 
+        teachers: response.data,
+        isLoading: false 
+      });
+    } catch (error) {
+      console.log('Error fetching teachers:', error.message);
+    }
+  },
   deleteTeacher: async (id) => {
     try {
       await axios.delete(`http://localhost:3001/profesor/${id}`);
-      // Actualizar el estado de los profesores después de la eliminación
       set((state) => ({
-        teachers: state.teachers.filter((teacher) => teacher.id !== id),
+        teachers: state.teachers.filter((teacher) => teacher.profesor_id !== profesorId),
+        isLoading: false
       }));
     } catch (error) {
-      console.error('Error al eliminar el profesor:', error.message);
+      console.log('Error deleting teacher:', error.message);
     }
   },
-
-  // Función para actualizar la información de un profesor
   updateTeacher: async (id, updateData) => {
     try {
       const response = await axios.put(`http://localhost:3001/profesor/${id}`, updateData);
-      // Actualizar el estado de los profesores después de la actualización
       set((state) => ({
         teachers: state.teachers.map((teacher) =>
-          teacher.id === id ? response.data : teacher
+          teacher.profesor_id === profesorId ? response.data : teacher
         ),
+        isLoading: false
       }));
+      return response.data;
     } catch (error) {
-      console.error('Error al actualizar el profesor:', error.message);
+      const errorMessage = error.response?.data?.message || error.message;
+      set({ 
+        error: errorMessage,
+        isLoading: false 
+      });
+      throw new Error(errorMessage);
     }
   },
+
+  // Obtener profesor por ID
+  getTeacherById: async (profesorId) => {
+    set({ isLoading: true, error: null });
+    try {
+      const response = await axios.get(`http://localhost:3001/profesor/${profesorId}`);
+      return response.data;
+    } catch (error) {
+      console.log('Error updating teacher:', error.message);
+    }
+  },
+
+  // Limpiar errores
+  clearError: () => set({ error: null }),
 }));
 
 export default useTeacherStore;

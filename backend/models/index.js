@@ -1,41 +1,31 @@
-const sequelize = require('../db')
+const sequelize = require('../db');
 
-//importar los modelos
+// Importar los modelos
+const Usuario = require('./Usuario');
+const Rol = require('./Roles');  // Cambié "Roles" a "Rol" para mantener consistencia
+const Estudiante = require('./Estudiante');
+const Profesor = require('./Profesor');
+const Carrera = require('./Carrera');
+const PlanEstudio = require('./PlanEstudio');
+const Curso = require('./Curso');
+const Matricula = require('./Matricula');
+const Asistencia = require('./Asistencia');
+const Calificacion = require('./Calificacion');
 
-const Usuario = require('./Usuario')
-const Roles = require('./Roles')
-const Roles_Usuarios =('./RolesUsuarios.js')
-const Estudiante=('./Estudiante.js')
-const Profesor=('./Profesor.js')
-const Carrera=('./Carrera.js')
-const Planestudio=('./Planestudio.js')
-const Materia=('./Materia.js')
-const CURSO=('./Curso.js')
-const Matricula=('./Matricula.js')
-const Asistencia=('./Asistencia.js')
-const Calificacion=('./Calificacion.js')
-const LOGIN=('./Login.js')
-
-
-
-const db ={
+// Exportar la instancia de sequelize junto con todos los modelos
+const db = {
     sequelize,
     Usuario,
-    Roles,
-    Roles_Usuarios,
+    Rol,
     Estudiante,
     Profesor,
     Carrera,
-    Planestudio,
-    Materia,
-    CURSO,
+    PlanEstudio,
+    Curso,
     Matricula,
     Asistencia,
     Calificacion,
-    LOGIN
-    
-    
-    //agregar si hay mas modelos aqui.
-}
+    // Agrega otros modelos aquí si es necesario
+};
 
-module.exports = db
+module.exports = db;

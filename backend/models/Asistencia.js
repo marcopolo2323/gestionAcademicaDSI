@@ -1,5 +1,6 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../db');
+const Matricula = require('./Matricula'); // Importar el modelo de Matricula si es necesario
 
 const Asistencia = sequelize.define('Asistencia', {
     asistencia_id: {
@@ -34,6 +35,9 @@ const Asistencia = sequelize.define('Asistencia', {
     tableName: 'ASISTENCIAS', // Asegúrate de que el nombre de la tabla coincida con el de la base de datos
     timestamps: false // Si no tienes columnas de createdAt y updatedAt en tu tabla
 });
+
+// Relación con Matricula si es necesario
+Asistencia.belongsTo(Matricula, { foreignKey: 'matricula_id' });
 
 // Exportar el modelo
 module.exports = Asistencia;

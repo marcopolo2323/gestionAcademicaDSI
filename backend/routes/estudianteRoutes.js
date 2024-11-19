@@ -1,5 +1,10 @@
 const express = require('express');
-const { registerUserAndStudent } = require('../controllers/estudianteControllers');
+const {
+    createEstudianteController,
+    getAllEstudiantesController,
+    updatedEstudianteByIdController,
+    deleteEstudianteByIdController
+} = require('../controllers/estudianteControllers'); // Asegúrate de que la ruta al controlador sea correcta
 
 const estudianterouter = express.Router();
 

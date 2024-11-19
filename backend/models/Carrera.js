@@ -1,6 +1,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../db');
 
+
 const Carrera = sequelize.define('Carrera', {
     carrera_id: {
         type: DataTypes.INTEGER,
@@ -14,7 +15,10 @@ const Carrera = sequelize.define('Carrera', {
     },
     descripcion: {
         type: DataTypes.TEXT,
-        allowNull: true
+        allowNull: true,
+        validate: {
+            len: [0, 500]
+        }
     },
     duracion_semestres: {
         type: DataTypes.INTEGER,
@@ -24,7 +28,7 @@ const Carrera = sequelize.define('Carrera', {
         type: DataTypes.STRING(20),
         defaultValue: 'ACTIVO',
         validate: {
-            isIn: [['ACTIVO', 'INACTIVO']] // Validación para el estado
+            isIn: [['ACTIVO', 'INACTIVO']]
         }
     },
     fecha_registro: {
@@ -32,9 +36,9 @@ const Carrera = sequelize.define('Carrera', {
         defaultValue: DataTypes.NOW
     }
 }, {
-    tableName: 'CARRERAS', // Asegúrate de que el nombre de la tabla coincida con el de la base de datos
-    timestamps: false // Si no tienes columnas de createdAt y updatedAt en tu tabla
+    tableName: 'CARRERAS',
+    timestamps: false
 });
 
-// Exportar el modelo
+
 module.exports = Carrera;

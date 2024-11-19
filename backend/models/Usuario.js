@@ -16,14 +16,6 @@ const Usuario = sequelize.define('Usuario', {
         type: DataTypes.STRING(255),
         allowNull: false
     },
-    email: {
-        type: DataTypes.STRING(100),
-        allowNull: false,
-        unique: true,
-        validate: {
-            isEmail: true // Validación para asegurar que el formato del email es correcto
-        }
-    },
     ultimo_login: {
         type: DataTypes.DATE,
         allowNull: true
@@ -31,19 +23,14 @@ const Usuario = sequelize.define('Usuario', {
     activo: {
         type: DataTypes.BOOLEAN,
         defaultValue: true
-    },
+    }, 
     fecha_registro: {
         type: DataTypes.DATE,
         defaultValue: DataTypes.NOW
-    },
-    token_recuperacion: {
-        type: DataTypes.STRING(255),
-        allowNull: true
     }
 }, {
-    // Opciones adicionales si es necesario
-    tableName: 'USUARIOS', // Asegúrate de que el nombre de la tabla coincida con el de la base de datos
-    timestamps: false // Si no tienes columnas de createdAt y updatedAt en tu tabla
+    tableName: 'USUARIOS',
+    timestamps: false
 });
 
 module.exports = Usuario;

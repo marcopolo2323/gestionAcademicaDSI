@@ -1,5 +1,6 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../db');
+const Carrera = require('./Carrera'); // Importa el modelo Carrera
 
 const PlanEstudio = sequelize.define('PlanEstudio', {
     plan_id: {
@@ -11,8 +12,8 @@ const PlanEstudio = sequelize.define('PlanEstudio', {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-            model: 'CARRERAS', // Nombre de la tabla referenciada
-            key: 'carrera_id'   // Clave primaria de la tabla referenciada
+            model: Carrera, // Referencia directa al modelo Carrera
+            key: 'carrera_id'
         }
     },
     codigo: {
@@ -36,9 +37,11 @@ const PlanEstudio = sequelize.define('PlanEstudio', {
         }
     }
 }, {
-    tableName: 'PLANES_ESTUDIO', // Asegúrate de que el nombre de la tabla coincida con el de la base de datos
-    timestamps: false // Si no tienes columnas de createdAt y updatedAt en tu tabla
+    tableName: 'PLANES_ESTUDIO',
+    timestamps: false
 });
 
-// Exportar el modelo
+// Define la relación entre PlanEstudio y Carrera
+PlanEstudio.belongsTo(Carrera, { foreignKey: 'carrera_id' });
+
 module.exports = PlanEstudio;

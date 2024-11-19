@@ -5,7 +5,7 @@ const {
     getAllAsistenciasController,
     updatedAsistenciaByIdController,
     deleteAsistenciaByIdController
-} = require('../controllers/asistenciaControllers'); // Asegúrate de que la ruta sea correcta
+} = require('../controllers/AsistenciaControllers'); // Asegúrate de que la ruta sea correcta
 
 // Ruta para crear una nueva asistencia
 router.post('/', async (req, res) => {

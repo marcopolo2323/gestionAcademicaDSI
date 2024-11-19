@@ -4,7 +4,7 @@ const {
     getAllCarrerasController,
     updatedCarreraByIdController,
     deleteCarreraByIdController
-} = require('../controllers/carreraControllers'); // Asegúrate de que la ruta sea correcta
+} = require('../controllers/CarreraControllers'); // Asegúrate de que la ruta sea correcta
 
 const router = express.Router();
 
