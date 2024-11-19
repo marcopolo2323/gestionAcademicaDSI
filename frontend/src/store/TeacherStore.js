@@ -1,107 +1,63 @@
 import { create } from 'zustand';
-import axios from 'axios';
+import { api, handleRequest } from '../utils/api';
 
 const useTeacherStore = create((set) => ({
   teachers: [],
   isLoading: false,
   error: null,
 
-  // Agregar profesor
   addTeacher: async (teacherData) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await axios.post('http://localhost:3001/profesor', teacherData);
+      const response = await api.post('/profesor', teacherData);
+      console.log('Respuesta del servidor:', response.data);
+      
       set((state) => ({
         teachers: [...state.teachers, response.data],
-        isLoading: false,
+        isLoading: false
       }));
-      return response.data; // Retornamos los datos para usarlos en el componente si es necesario
+      
+      return response.data;
     } catch (error) {
-      const errorMessage = error.response?.data?.message || error.message;
-      set({ error: errorMessage, isLoading: false });
-      throw new Error(errorMessage); // Lanzamos el error para manejarlo en el componente
+      console.error('Error al crear profesor:', error.response?.data || error.message);
+      set({ 
+        error: error.response?.data?.error || error.message,
+        isLoading: false 
+      });
+      throw new Error(error.response?.data?.error || 'Error al crear profesor');
     }
   },
-
-  // Obtener profesores
+  
   fetchTeachers: async () => {
     set({ isLoading: true, error: null });
-    try {
-      const response = await axios.get('http://localhost:3001/profesor');
-      set({ 
-        teachers: response.data,
-        isLoading: false 
-      });
-    } catch (error) {
-      const errorMessage = error.response?.data?.message || error.message;
-      set({ 
-        error: errorMessage,
-        isLoading: false 
-      });
-      throw new Error(errorMessage);
-    }
+    await handleRequest(() => api.get('/profesor'), (data) =>
+      set({ teachers: data, isLoading: false })
+    ).catch((error) => set({ error: error.message, isLoading: false }));
   },
 
-  // Eliminar profesor
-  deleteTeacher: async (profesorId) => {
-    set({ isLoading: true, error: null });
-    try {
-      await axios.delete(`http://localhost:3001/profesor/${profesorId}`);
-      set((state) => ({
-        teachers: state.teachers.filter((teacher) => teacher.profesor_id !== profesorId),
-        isLoading: false
-      }));
-    } catch (error) {
-      const errorMessage = error.response?.data?.message || error.message;
-      set({ 
-        error: errorMessage,
-        isLoading: false 
-      });
-      throw new Error(errorMessage);
-    }
-  },
 
-  // Actualizar profesor
-  updateTeacher: async (profesorId, updateData) => {
+  updateTeacher: async (id, updateData) => {
     set({ isLoading: true, error: null });
-    try {
-      const response = await axios.put(`http://localhost:3001/profesor/${profesorId}`, updateData);
+    return await handleRequest(() => api.put(`/profesor/${id}`, updateData), (data) =>
       set((state) => ({
         teachers: state.teachers.map((teacher) =>
-          teacher.profesor_id === profesorId ? response.data : teacher
+          teacher.profesor_id === id ? data : teacher
         ),
-        isLoading: false
-      }));
-      return response.data;
-    } catch (error) {
-      const errorMessage = error.response?.data?.message || error.message;
-      set({ 
-        error: errorMessage,
-        isLoading: false 
-      });
-      throw new Error(errorMessage);
-    }
+        isLoading: false,
+      }))
+    ).catch((error) => set({ error: error.message, isLoading: false }));
   },
 
-  // Obtener profesor por ID
-  getTeacherById: async (profesorId) => {
+  deleteTeacher: async (id) => {
     set({ isLoading: true, error: null });
-    try {
-      const response = await axios.get(`http://localhost:3001/profesor/${profesorId}`);
-      return response.data;
-    } catch (error) {
-      const errorMessage = error.response?.data?.message || error.message;
-      set({ 
-        error: errorMessage,
-        isLoading: false 
-      });
-      throw new Error(errorMessage);
-    } finally {
-      set({ isLoading: false });
-    }
+    await handleRequest(() => api.delete(`/profesor/${id}`), () =>
+      set((state) => ({
+        teachers: state.teachers.filter((teacher) => teacher.profesor_id !== id),
+        isLoading: false,
+      }))
+    ).catch((error) => set({ error: error.message, isLoading: false }));
   },
 
-  // Limpiar errores
   clearError: () => set({ error: null }),
 }));
 

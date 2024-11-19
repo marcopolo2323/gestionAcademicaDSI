@@ -3,17 +3,20 @@ const { Router } = require('express');
 const {
     createUsuarioController,
     getAllUsuariosController,
+    getUserByIdController,
     updatedUsuarioByIdController,
     deleteUsuarioByIdController
 } = require('../controllers/UsuarioControllers');
+
+const { login } = require('../controllers/UsuarioControllers');
 
 const usuarioRouter = Router();
 
 // Crear un nuevo usuario
 usuarioRouter.post("/", async (req, res) => {
-    const { username, password_hash, email } = req.body; // No incluir 'usuario_id' si es auto-generado
+    const { username, password_hash, role } = req.body; // No incluir 'usuario_id' si es auto-generado
     try {
-        const newUsuario = await createUsuarioController({ username, password_hash, email });
+        const newUsuario = await createUsuarioController({ username, password_hash, role });
         res.status(201).json(newUsuario);
     } catch (error) {
         res.status(400).json({ error: error.message });
@@ -25,6 +28,21 @@ usuarioRouter.get("/", async (req, res) => {
     try {
         const usuarios = await getAllUsuariosController();
         res.status(200).json(usuarios);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Obtener usuario por ID
+usuarioRouter.get("/:usuario_id", async (req, res) => {
+    const { usuario_id } = req.params;
+
+    try {
+        const usuario = await getUserByIdController(usuario_id);
+        if (!usuario) {
+            return res.status(404).json({ error: 'Usuario no encontrado' });
+        }
+        res.status(200).json(usuario);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
@@ -58,6 +76,17 @@ usuarioRouter.delete("/:usuario_id", async (req, res) => {
         res.status(204).send(); // Sin contenido
     } catch (error) {
         res.status(500).json({ error: error.message });
+    }
+});
+
+usuarioRouter.post("/login", async (req, res) => {
+    const { username, password } = req.body;
+    
+    try {
+        const user = await login(username, password);
+        res.status(200).json(user);
+    } catch (error) {
+        res.status(401).json({ error: error.message });
     }
 });
 

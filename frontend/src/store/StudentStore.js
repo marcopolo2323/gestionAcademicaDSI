@@ -1,47 +1,39 @@
 import { create } from 'zustand';
-import axios from 'axios';
+import { api, handleRequest } from '../utils/api';
 
 const useStudentStore = create((set) => ({
   students: [],
-  addStudent: async (student) => {
-    try { 
-      const response = await axios.post('http://localhost:3001/estudiante', student);
-      set((state) => ({
-        students: [...state.students, response.data],
-      }));
-    } catch (error) {
-      console.log('Error adding student:', error.message);
-    }
-  },
+
   fetchStudents: async () => {
-    try {
-      const response = await axios.get('http://localhost:3001/estudiante');
-      set({ students: response.data });
-    } catch (error) {
-      console.log('Error fetching students:', error.message);
-    }
+    await handleRequest(() => api.get('/estudiante'), (data) =>
+      set({ students: data })
+    );
   },
-  deleteStudent: async (id) => {
-    try {
-      await axios.delete(`http://localhost:3001/estudiante/${id}`);
+
+  addStudent: async (student) => {
+    return await handleRequest(() => api.post('/estudiante', student), (data) =>
       set((state) => ({
-        students: state.students.filter((student) => student.id !== id),
-      }));
-    } catch (error) {
-      console.log('Error deleting student:', error.message);
-    }
+        students: [...state.students, data],
+      }))
+    );
   },
+
   updateStudent: async (id, updateData) => {
-    try {
-      const response = await axios.put(`http://localhost:3001/estudiante/${id}`, updateData);
+    return await handleRequest(() => api.put(`/estudiante/${id}`, updateData), (data) =>
       set((state) => ({
         students: state.students.map((student) =>
-          student.id === id ? response.data : student
+          student.id === id ? { ...student, ...data } : student
         ),
-      }));
-    } catch (error) {
-      console.log('Error updating student:', error.message);
-    }
+      }))
+    );
+  },
+
+  deleteStudent: async (id) => {
+    await handleRequest(() => api.delete(`/estudiante/${id}`), () =>
+      set((state) => ({
+        students: state.students.filter((student) => student.id !== id),
+      }))
+    );
   },
 }));
 

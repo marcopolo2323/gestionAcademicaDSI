@@ -14,7 +14,12 @@ const Usuario = sequelize.define('Usuario', {
     },
     password_hash: {
         type: DataTypes.STRING(255),
-        allowNull: false
+        allowNull: false 
+    },
+    role:{
+        type: DataTypes.STRING(20),
+        allowNull: false,
+        defaultValue: 'user'        
     },
     ultimo_login: {
         type: DataTypes.DATE,

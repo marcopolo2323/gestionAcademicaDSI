@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import useStore from '../../store/useStore';
-import api from '../../utils/api';
+import {api} from '../../utils/api';
 
 const StudentDashboard = () => {
   const user = useStore((state) => state.user);

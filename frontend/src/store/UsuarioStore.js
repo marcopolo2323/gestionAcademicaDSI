@@ -1,58 +1,40 @@
 import { create } from 'zustand';
-import axios from 'axios';
+import { api, handleRequest } from '../utils/api';
 
 const useUsuarioStore = create((set) => ({
-    usuarios: [],
-    
-    agregarUsuario: async (usuario) => {
-        try {
-            const response = await axios.post('http://localhost:3001/usuarios', usuario);
-            set((state) => ({ usuarios: [...state.usuarios, response.data] }));
-            return response.data; // Importante: retornar los datos para usarlos en el registro
-        } catch (error) {
-            console.log('Error al agregar usuario', error.message);
-            throw error; // Lanzar el error para manejarlo en el componente
-        }
-    },
+  usuarios: [],
 
-    obtenerUsuarios: async () => {
-        try {
-            const response = await axios.get('http://localhost:3001/usuarios');
-            set({ usuarios: response.data });
-            return response.data;
-        } catch (error) {
-            console.log('Error al obtener usuarios', error.message);
-            throw error;
-        }
-    },
+  fetchUsuarios: async () => {
+    await handleRequest(() => api.get('/usuario'), (data) =>
+      set({ usuarios: data })
+    );
+  },
 
-    eliminarUsuario: async (id) => {
-        try {
-            const response = await axios.delete(`http://localhost:3001/usuarios/${id}`);
-            set((state) => ({ 
-                usuarios: state.usuarios.filter(usuario => usuario.id !== id) 
-            }));
-            return response.data;
-        } catch (error) {
-            console.log('Error al eliminar usuario', error.message);
-            throw error;
-        }
-    },
+  addUsuario: async (usuario) => {
+    return await handleRequest(() => api.post('/usuario', usuario), (data) =>
+      set((state) => ({
+        usuarios: [...state.usuarios, data],
+      }))
+    );
+  },
 
-    actualizarUsuario: async (id, datosActualizados) => {
-        try {
-            const response = await axios.put(`http://localhost:3001/usuarios/${id}`, datosActualizados);
-            set((state) => ({ 
-                usuarios: state.usuarios.map((usuario) => 
-                    usuario.id === id ? { ...usuario, ...response.data } : usuario
-                ) 
-            }));
-            return response.data;
-        } catch (error) {
-            console.log('Error al actualizar usuario:', error.message);
-            throw error;
-        }
-    }
+  updateUsuario: async (id, updateData) => { 
+    return await handleRequest(() => api.put(`/usuario/${id}`, updateData), (data) =>
+      set((state) => ({
+        usuarios: state.usuarios.map((usuario) =>
+          usuario.id === id ? { ...usuario, ...data } : usuario
+        ),
+      }))
+    );
+  },
+
+  deleteUsuario: async (id) => {
+    await handleRequest(() => api.delete(`/usuario/${id}`), () =>
+      set((state) => ({
+        usuarios: state.usuarios.filter((usuario) => usuario.id !== id),
+      }))
+    );
+  },
 }));
 
 export default useUsuarioStore;

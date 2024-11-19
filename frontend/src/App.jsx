@@ -1,7 +1,7 @@
 // App.jsx
 import { useEffect, useCallback, useState } from 'react';
 import Navbar from './components/navbar/Navbar';
-import api from './utils/api';
+import {api} from './utils/api';
 import AppRouter from './features/AppRouter';
 
 const App = () => {
