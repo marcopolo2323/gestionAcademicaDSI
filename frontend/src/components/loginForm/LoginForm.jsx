@@ -1,7 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import useStore from '../../store/useStore';
-import { api } from '../../utils/api';
+import { useAuth } from '../../contexts/AuthContext';
 
 const LoginForm = () => {
   const [username, setUsername] = useState('');
@@ -9,9 +8,7 @@ const LoginForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
-  const setUser = useStore((state) => state.setUser);
-  const setToken = useStore((state) => state.setToken);
-  const token = useStore((state) => state.token);
+  const { login } = useAuth(); // Move useAuth to the top level
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -19,68 +16,21 @@ const LoginForm = () => {
     setError('');
 
     try {
-      const response = await api.post('/usuario/login', { 
-        username, 
-        password 
-      });
+      const user = await login({ username, password });
 
-      // Verificar si la respuesta contiene datos de usuario válidos
-      if (response.data && response.data.usuario_id) {
-        // Guardar token y usuario de manera segura
-        const authToken = response.data.token || generateToken(response.data);
-        
-        setToken(authToken);
-        setUser(response.data);
-
-        // Intentar obtener datos adicionales del usuario
-        await fetchAdditionalUserDetails(response.data);
-
-        // Navegar al dashboard usando react-router
-        navigate('/dashboard');
+      // Navegar según el rol
+      if (user.role === 'ROLE_STUDENT') {
+        navigate('/student');
+      } else if (user.role === 'ROLE_TEACHER') {
+        navigate('/teacher-dashboard');
       } else {
-        setError('Credenciales inválidas');
+        navigate('/dashboard');
       }
 
     } catch (error) {
-      console.error('Error de autenticación:', error);
       setError(error.response?.data?.error || 'Error al iniciar sesión');
     } finally {
       setIsLoading(false);
-    }
-  };
-
-  // Genera un token básico si no viene desde el backend
-  const generateToken = (user) => {
-    return btoa(JSON.stringify({
-      sub: user.usuario_id,
-      username: user.username,
-      role: user.role,
-      exp: Date.now() + 24 * 60 * 60 * 1000 // 24 horas
-    }));
-  };
-
-  // Obtener detalles adicionales del usuario
-  const fetchAdditionalUserDetails = async (user) => {
-    try {
-      if (user.role === 'ROLE_STUDENT') {
-        const studentResponse = await api.get(`/estudiante`, {
-          params: { usuario_id: user.usuario_id }
-        });
-        setUser(prevUser => ({
-          ...prevUser,
-          studentData: studentResponse.data[0]
-        }));
-      } else if (user.role === 'ROLE_TEACHER') {
-        const teacherResponse = await api.get(`/profesor`, {
-          params: { usuario_id: user.usuario_id }
-        });
-        setUser(prevUser => ({
-          ...prevUser,
-          teacherData: teacherResponse.data[0]
-        }));
-      }
-    } catch (error) {
-      console.warn('Error al obtener datos adicionales:', error);
     }
   };
 

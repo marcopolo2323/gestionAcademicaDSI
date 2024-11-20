@@ -1,45 +1,36 @@
-import { useEffect, useState } from 'react';
+// Navbar.jsx
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../contexts/authContext'; // Asegúrate de que la ruta sea correcta
 
 const Navbar = () => {
-  const [user, setUser] = useState(null);
-
-  useEffect(() => {
-    const storedUser = localStorage.getItem('user');
-    const storedToken = localStorage.getItem('token');
-
-    if (storedUser && storedToken) {
-      const parsedUser = JSON.parse(storedUser);
-      setUser(parsedUser);
-    }
-  }, []);
+  const { user, logout } = useAuth(); // Usar useAuth para obtener user y logout
+  const navigate = useNavigate();
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    setUser(null);
-    window.location.href = '/login';
+    logout();
+    navigate('/login');
   };
 
   return (
     <nav className="bg-gray-800 text-white py-4">
       <div className="container mx-auto flex justify-between items-center">
         <div>
-          <a href="/" className="text-lg font-bold">
+          <Link to="/" className="text-lg font-bold">
             Home
-          </a>
+          </Link>
         </div>
         {user ? (
           <div className="space-x-4">
-            <a href="/dashboard" className="hover:text-gray-300">
+            <Link to="/dashboard" className="hover:text-gray-300">
               Dashboard
-            </a>
-            <a href="/student-page" className="hover:text-gray-300">
+            </Link>
+            <Link to="/student-page" className="hover:text-gray-300">
               Student Page
-            </a>
+            </Link>
             {user.role === 'teacher' && (
-              <a href="/teacher-dashboard" className="hover:text-gray-300">
+              <Link to="/teacher-dashboard" className="hover:text-gray-300">
                 Teacher Dashboard
-              </a>
+              </Link>
             )}
             <button
               onClick={handleLogout}
@@ -50,12 +41,12 @@ const Navbar = () => {
           </div>
         ) : (
           <div className="space-x-4">
-            <a href="/login" className="hover:text-gray-300">
+            <Link to="/login" className="hover:text-gray-300">
               Login
-            </a>
-            <a href="/register" className="hover:text-gray-300">
+            </Link>
+            <Link to="/register" className="hover:text-gray-300">
               Register
-            </a>
+            </Link>
           </div>
         )}
       </div>

@@ -80,7 +80,10 @@ const RegisterForm = () => {
         await addTeacher(teacherData);
       }
 
-      setSuccess('¡Registro exitoso!');
+      setSuccess('¡Registro exitoso! Redirigiendo a la página de inicio de sesión...');
+      setTimeout(() => {
+        window.location.href = '/login';
+      }, 2000);
     } catch (error) {
       console.error('Error detallado:', error);
       setError(error.message || 'Hubo un error al registrar el usuario');

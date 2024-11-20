@@ -1,27 +1,26 @@
 import { useState, useEffect } from 'react';
-import {api} from '../../utils/api';
+import useCursoStore from '../../store/CursoStore'; // Ajusta la ruta según tu estructura
 
 const TeacherDashboard = () => {
-  const [courses, setCourses] = useState([]);
+  const { cursos, fetchCursos } = useCursoStore();
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
 
-  // Este hook obtiene los cursos asociados al profesor
   useEffect(() => {
-    const fetchCourses = async () => {
+    const loadCursos = async () => {
       try {
-        const response = await api.get('/teacher/courses'); // Endpoint para obtener los cursos
-        setCourses(response.data);
+        await fetchCursos();
+        // Añade este console.log para ver la estructura de los datos
+        console.log('Cursos recibidos:', cursos);
       } catch (error) {
-        setError('Error al obtener los cursos. Inténtalo de nuevo más tarde.');
-        console.error('Error al obtener los cursos:', error);
+        setError(error.message);
       } finally {
         setIsLoading(false);
       }
     };
 
-    fetchCourses();
-  }, []);
+    loadCursos();
+  }, [fetchCursos]);
 
   return (
     <div>
@@ -31,13 +30,13 @@ const TeacherDashboard = () => {
         <p>Loading courses...</p>
       ) : error ? (
         <p style={{ color: 'red' }}>{error}</p>
-      ) : courses.length === 0 ? (
+      ) : cursos.length === 0 ? (
         <p>You have no courses yet.</p>
       ) : (
         <ul>
-          {courses.map(course => (
-            <li key={course.id}>
-              {course.name} - {course.code}
+          {cursos.map((curso, index) => (
+            <li key={curso.id || index}>  {/* Usa index como fallback si no hay id */}
+              {curso.nombre || curso.name} - {curso.codigo || curso.code}
             </li>
           ))}
         </ul>
