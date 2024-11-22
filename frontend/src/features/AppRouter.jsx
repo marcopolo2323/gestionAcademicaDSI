@@ -10,6 +10,7 @@ import StudentPage from './../pages/studentPage/StudentPage';
 import TeacherDashboard from './../components/teacherDashboard/TeacherDashboard';
 import { useAuth } from '../contexts/authContext'; // Asegúrate de que la ruta sea correcta
 import RegistroHorario from '../components/registros/horario/Horario';
+import StudentList from '../components/StudentList/StudentList';
 
 const PrivateRoute = ({ children, role }) => {
   const { user, isLoading } = useAuth();
@@ -48,6 +49,7 @@ const AppRouter = () => {
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
       <Route path="/horario" element={<RegistroHorario />} />
+      <Route path="/StudentList" element={<StudentList />} />
       <Route 
         path="/dashboard" 
         element={
