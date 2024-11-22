@@ -11,8 +11,15 @@ const {
     PlanEstudioControllers,
     ProfesorControllers, 
     RolesControllers,
-    UsuarioControllers
+    UsuarioControllers,
+    horarioControllers,
+    
+
+
 } = require('../controllers');
+const horarioRoutes=require('../routes/horarioRoutes')
+
+
 
 router.use('/asistencia', require('./AsistenciaRoutes'));
 router.use('/calificacion', require('./CalificacionRoutes'));
@@ -24,5 +31,8 @@ router.use('/planestudio', require('./PlanestudioRoutes'));
 router.use('/profesor', require('./ProfesorRoutes'));
 router.use('/roles', require('./RolesRoutes'));
 router.use('/usuario', require('./UsuarioRoutes'));
+router.use('/horario', require('./horarioRoutes'));
+
+
 
 module.exports = router;

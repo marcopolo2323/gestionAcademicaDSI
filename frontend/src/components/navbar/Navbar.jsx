@@ -2,6 +2,7 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/authContext'; // Asegúrate de que la ruta sea correcta
 
+
 const Navbar = () => {
   const { user, logout } = useAuth(); // Usar useAuth para obtener user y logout
   const navigate = useNavigate();

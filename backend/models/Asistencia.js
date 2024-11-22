@@ -8,7 +8,7 @@ const Asistencia = sequelize.define('Asistencia', {
         primaryKey: true,
         autoIncrement: true
     },
-    matricula_id: {
+    id: {
         type: DataTypes.INTEGER,
         allowNull: true, // Permitir nulos si no siempre se proporciona una matrícula
         references: {
