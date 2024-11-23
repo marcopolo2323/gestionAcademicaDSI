@@ -1,0 +1,114 @@
+/* Estilo general para la lista de profesores */
+.lista {
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Título */
+.lista h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+/* Campo de búsqueda */
+.search-input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+/* Tabla de profesores */
+.professor-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.professor-table th,
+.professor-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.professor-table th {
+    background-color: #007bff;
+    color: white;
+}
+
+/* Estilo para filas alternas */
+.professor-table tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+/* Iconos de acciones */
+.edit-ico,
+.delete-ico {
+    cursor: pointer;
+    font-size: 20px;
+    margin-right: 10px;
+}
+
+.edit-ico:hover {
+    color: #007bff; /* Color al pasar el mouse */
+}
+
+.delete-ico:hover {
+    color: #dc3545; /* Color al pasar el mouse */
+}
+
+/* Modal de eliminación */
+.modal-delete {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.contend {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.btns {
+    display: flex;
+    justify-content: space-between;
+}
+
+.btn-SI,
+.btn-NO {
+    padding: 10px 15px;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-SI {
+    background-color: #dc3545; /* Rojo para eliminar */
+    color: white;
+}
+
+.btn-NO {
+    background-color: #6c757d; /* Gris para cancelar */
+    color: white;
+}
+
+.btn-SI:hover {
+    background-color: #c82333; /* Rojo oscuro al pasar el mouse */
+}
+
+.btn-NO:hover {
+    background-color: #5a6268; /* Gris oscuro al pasar el mouse */
+}
