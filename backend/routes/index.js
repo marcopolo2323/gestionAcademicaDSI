@@ -11,7 +11,9 @@ const {
     PlanEstudioControllers,
     ProfesorControllers, 
     RolesControllers,
-    UsuarioControllers
+    UsuarioControllers,
+    AuthControllers,
+    horarioControllers
 } = require('../controllers');
 
 router.use('/asistencia', require('./AsistenciaRoutes'));
@@ -24,5 +26,7 @@ router.use('/planestudio', require('./PlanestudioRoutes'));
 router.use('/profesor', require('./ProfesorRoutes'));
 router.use('/roles', require('./RolesRoutes'));
 router.use('/usuario', require('./UsuarioRoutes'));
+router.use('/login',require('./authRoutes'))
+router.use('/horario',require('./horarioRoutes'))
 
 module.exports = router;

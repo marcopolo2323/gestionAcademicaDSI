@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import useUsuarioStore from './../../store/UsuarioStore';
-import useStudentStore from './../../store/StudentStore';
-import useTeacherStore from './../../store/TeacherStore';
+import useUsuarioStore from '../../../../store/UsuarioStore';
+import useStudentStore from '../../../../store/StudentStore';
+import useTeacherStore from '../../../../store/TeacherStore';
 
 const RegisterForm = () => {
   const [username, setUsername] = useState('');

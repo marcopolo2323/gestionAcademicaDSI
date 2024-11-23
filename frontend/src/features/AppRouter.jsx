@@ -1,6 +1,7 @@
-// AppRouter.js
 import { Route, Routes, Navigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import Home from './../pages/home/Home';
 import LoginPage from './../pages/loginPage/LoginPage';
@@ -8,25 +9,29 @@ import RegisterPage from './../pages/registerPage/RegisterPage';
 import Dashboard from './../pages/dashboard/DashBoard';
 import StudentPage from './../pages/studentPage/StudentPage';
 import TeacherDashboard from './../components/teacherDashboard/TeacherDashboard';
-import { useAuth } from '../contexts/authContext'; // Asegúrate de que la ruta sea correcta
+import useStore from '../store/useStore';
+import MatriculaForm from '../components/matriculaForm/MatriculaForm';
 
 const PrivateRoute = ({ children, role }) => {
-  const { user, isLoading } = useAuth();
+  const { user, logout } = useStore();
+  const navigate = useNavigate();
 
-  if (isLoading) {
-    return <div>Cargando...</div>;
-  }
+  useEffect(() => {
+    if (!user) {
+      logout();
+      navigate('/login');
+    }
+  }, [user, logout, navigate]);
 
   if (!user) {
     return <Navigate to="/login" replace />;
   }
 
-  // Validación de roles más flexible
+  // Flexible role validation
   if (role) {
-    const normalizedRole = role.toUpperCase();
-    const userRole = user.role ? user.role.replace('ROLE_', '').toUpperCase() : '';
-    
-    if (userRole !== normalizedRole) {
+    const normalizedRole = `ROLE_${role.toUpperCase()}`;
+    if (user.role !== normalizedRole) {
+      // Puedes personalizar esto para mostrar un mensaje de error o redirigir
       return <Navigate to="/" replace />;
     }
   }
@@ -34,7 +39,6 @@ const PrivateRoute = ({ children, role }) => {
   return children;
 };
 
-// Añadir PropTypes para PrivateRoute
 PrivateRoute.propTypes = {
   children: PropTypes.node.isRequired,
   role: PropTypes.string
@@ -70,6 +74,16 @@ const AppRouter = () => {
           </PrivateRoute>
         } 
       />
+      <Route 
+        path="/matricula" 
+        element={
+          <PrivateRoute role="TEACHER">
+            <MatriculaForm />
+          </PrivateRoute>
+        } 
+      />
+      {/* Opcional: Ruta de página no encontrada */}
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
 };

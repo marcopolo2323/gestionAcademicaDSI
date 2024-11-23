@@ -9,5 +9,7 @@ module.exports = {
     PlanEstudioController: require('./PlanestudioControllers'),
     ProfesorController: require('./ProfesorControllers'),
     RolesController: require('./RolesControllers'),
-    UsuarioController: require('./UsuarioControllers')
+    UsuarioController: require('./UsuarioControllers'),
+    AuthControllers: require('./AuthControllers'),
+    HorarioControllers: require('./horarioControllers')
 };

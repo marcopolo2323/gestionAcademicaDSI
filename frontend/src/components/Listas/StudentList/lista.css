@@ -1,0 +1,94 @@
+/* lista.css */
+
+/* Estilo general para la lista */
+.lista {
+    padding: 20px;
+    font-family: Arial, sans-serif;
+}
+
+/* Estilo del encabezado */
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Estilo del campo de búsqueda */
+.search-input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+/* Estilo de la tabla */
+.student-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+/* Estilo de las celdas de la tabla */
+.student-table th, .student-table td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: left;
+}
+
+/* Estilo del encabezado de la tabla */
+.student-table th {
+    background-color: #f2f2f2;
+    color: #333;
+}
+
+/* Estilo para las filas de la tabla al pasar el mouse */
+.student-table tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* Estilo para los iconos de editar y eliminar */
+.edit-ico, .delete-ico {
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+/* Estilo del modal de eliminación */
+.modal-delete {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.contend {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.btns {
+    display: flex;
+    justify-content: space-between;
+}
+
+.btn-SI, .btn-NO {
+    padding: 10px 15px;
+    border-radius: 5px;
+}
+
+.btn-SI {
+    background-color: #ff4d4d; /* Rojo para eliminar */
+}
+
+.btn-NO {
+    background-color: #4CAF50; /* Verde para cancelar */
+}
+
+.btn-SI:hover, .btn-NO:hover {
+    opacity: 0.9; /* Efecto hover */
+}

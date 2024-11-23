@@ -1,6 +1,6 @@
 import useStore from "../../store/useStore"; // Cambiar importación
 
-const StudentPage = () => {
+const AdminPage = () => {
   const { user } = useStore(); // Usar useStore en lugar de useAuth
 
   if (!user) {
@@ -17,4 +17,4 @@ const StudentPage = () => {
   );
 };
 
-export default StudentPage;
+export default AdminPage;
