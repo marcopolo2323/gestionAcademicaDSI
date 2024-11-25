@@ -14,9 +14,9 @@ const usuarioRouter = Router();
 
 // Crear un nuevo usuario
 usuarioRouter.post("/", async (req, res) => {
-    const { username, password_hash, role } = req.body; // No incluir 'usuario_id' si es auto-generado
+    const { username, password_hash, rol_id } = req.body; // No incluir 'usuario_id' si es auto-generado
     try {
-        const newUsuario = await createUsuarioController({ username, password_hash, role });
+        const newUsuario = await createUsuarioController({ username, password_hash, rol_id });
         res.status(201).json(newUsuario);
     } catch (error) {
         res.status(400).json({ error: error.message });

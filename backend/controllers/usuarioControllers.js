@@ -2,10 +2,10 @@
     const bcrypt = require('bcrypt')
 
     // Crea un nuevo usuario
-    const createUsuarioController = async ({ username, password_hash, role }) => {
+    const createUsuarioController = async ({ username, password_hash, rol_id }) => {
         const hashedPassword = await bcrypt.hash(password_hash, 10)
         try {
-            const newUsuario = await Usuario.create({ username, password_hash:hashedPassword, role });
+            const newUsuario = await Usuario.create({ username, password_hash:hashedPassword, rol_id });
             return newUsuario;
         } catch (error) {
             throw new Error(error.message);

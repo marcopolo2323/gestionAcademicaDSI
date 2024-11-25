@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import useCalificacionStore from '../stores/CalificacionStore'
-import useCursoStore from '../stores/CursoStore'
+import useCalificacionStore from '../../../store/CalificacionStore'
+import useCursoStore from '../../../store/CursoStore'
 
 const CalificacionForm = () => {
   const { registrarCalificacion } = useCalificacionStore()

@@ -1,17 +1,20 @@
+// Carrera.js
 const { DataTypes } = require('sequelize');
 const sequelize = require('../db');
-
 
 const Carrera = sequelize.define('Carrera', {
     carrera_id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
-    },
+    }, 
     nombre: {
         type: DataTypes.STRING(100),
         unique: true,
-        allowNull: false
+        allowNull: false,
+        validate: {
+            len: [2, 100]
+        }
     },
     descripcion: {
         type: DataTypes.TEXT,
@@ -22,7 +25,11 @@ const Carrera = sequelize.define('Carrera', {
     },
     duracion_semestres: {
         type: DataTypes.INTEGER,
-        allowNull: false
+        allowNull: false,
+        validate: {
+            min: 1,
+            max: 12
+        }
     },
     estado: {
         type: DataTypes.STRING(20),
@@ -37,8 +44,10 @@ const Carrera = sequelize.define('Carrera', {
     }
 }, {
     tableName: 'CARRERAS',
-    timestamps: false
+    timestamps: false,
+    indexes: [
+        { fields: ['nombre'] }
+    ]
 });
-
 
 module.exports = Carrera;

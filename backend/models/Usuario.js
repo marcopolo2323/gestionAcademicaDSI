@@ -1,3 +1,4 @@
+// Usuario.js
 const { DataTypes } = require('sequelize');
 const sequelize = require('../db');
 
@@ -10,16 +11,22 @@ const Usuario = sequelize.define('Usuario', {
     username: {
         type: DataTypes.STRING(50),
         allowNull: false,
-        unique: true
+        unique: true,
+        validate: {
+            len: [4, 50]
+        }
     },
     password_hash: {
         type: DataTypes.STRING(255),
-        allowNull: false 
+        allowNull: false
     },
-    role:{
-        type: DataTypes.STRING(20),
+    rol_id: {
+        type: DataTypes.INTEGER,
         allowNull: false,
-        defaultValue: 'user'        
+        references: {
+            model: 'ROLES',
+            key: 'rol_id'
+        }
     },
     ultimo_login: {
         type: DataTypes.DATE,
@@ -28,14 +35,18 @@ const Usuario = sequelize.define('Usuario', {
     activo: {
         type: DataTypes.BOOLEAN,
         defaultValue: true
-    }, 
+    },
     fecha_registro: {
         type: DataTypes.DATE,
         defaultValue: DataTypes.NOW
     }
 }, {
     tableName: 'USUARIOS',
-    timestamps: false
+    timestamps: false,
+    indexes: [
+        { fields: ['username'] },
+        { fields: ['rol_id'] }
+    ]
 });
 
 module.exports = Usuario;

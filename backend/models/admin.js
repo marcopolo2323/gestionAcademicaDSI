@@ -1,8 +1,8 @@
-const { DataTypes } = require('sequelize'); 
+// Admin.js
+const { DataTypes } = require('sequelize');
 const sequelize = require('../db');
-const Usuario = require('./Usuario'); // Importa el modelo Usuario
 
-const Admin = sequelize.define('Estudiante', {
+const Admin = sequelize.define('Admin', {
     admin_id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -13,27 +13,36 @@ const Admin = sequelize.define('Estudiante', {
         unique: true,
         allowNull: false,
         references: {
-            model: Usuario, // Referencia directa al modelo Usuario
+            model: 'USUARIOS',
             key: 'usuario_id'
         }
     },
     dni: {
         type: DataTypes.STRING(15),
         unique: true,
-        allowNull: false
+        allowNull: false,
+        validate: {
+            len: [5, 15]
+        }
     },
     nombres: {
         type: DataTypes.STRING(100),
-        allowNull: false
+        allowNull: false,
+        validate: {
+            len: [2, 100]
+        }
     },
     apellidos: {
-        type: DataTypes.STRING(100), 
-        allowNull: false
+        type: DataTypes.STRING(100),
+        allowNull: false,
+        validate: {
+            len: [2, 100]
+        }
     },
     direccion: {
         type: DataTypes.STRING(255),
         allowNull: true
-    }, 
+    },
     telefono: {
         type: DataTypes.STRING(20),
         allowNull: true
@@ -42,14 +51,14 @@ const Admin = sequelize.define('Estudiante', {
         type: DataTypes.STRING(100),
         allowNull: true,
         validate: {
-            isEmail: true // Validación para asegurar que el formato del email es correcto
+            isEmail: true
         }
     },
     estado: {
         type: DataTypes.STRING(20),
         defaultValue: 'ACTIVO',
         validate: {
-            isIn: [['ACTIVO', 'INACTIVO', 'RETIRADO']] // Validación para el estado
+            isIn: [['ACTIVO', 'INACTIVO', 'RETIRADO']]
         }
     },
     fecha_registro: {
@@ -57,11 +66,13 @@ const Admin = sequelize.define('Estudiante', {
         defaultValue: DataTypes.NOW
     }
 }, {
-    tableName: 'ESTUDIANTES', 
-    timestamps: false 
+    tableName: 'ADMINS',
+    timestamps: false,
+    indexes: [
+        { fields: ['usuario_id'] },
+        { fields: ['dni'] },
+        { fields: ['email'] }
+    ]
 });
-
-// Define la relación entre Estudiante y Usuario
-Estudiante.belongsTo(Usuario, { foreignKey: 'usuario_id' });
 
 module.exports = Admin;

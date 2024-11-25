@@ -1,33 +1,40 @@
-import { create } from 'zustand'
-import axios from 'axios'
+import { create } from 'zustand';
+import { api, handleRequest } from '../utils/api';
 
 const useAsistenciaStore = create((set) => ({
   asistencias: [],
-  loading: false,
-  error: null,
 
-  registrarAsistencia: async (asistenciaData) => {
-    set({ loading: true })
-    try {
-      const response = await axios.post('/api/asistencias', asistenciaData)
-      set(state => ({ 
-        asistencias: [...state.asistencias, response.data],
-        loading: false 
-      }))
-    } catch (error) {
-      set({ error: error.message, loading: false })
-    }
+  fetchAsistencias: async () => {
+    await handleRequest(() => api.get('/asistencia'), (data) =>
+      set({ asistencias: data })
+    );
   },
 
-  obtenerAsistenciasPorCurso: async (cursoId) => {
-    set({ loading: true })
-    try {
-      const response = await axios.get(`/api/asistencias/curso/${cursoId}`)
-      set({ asistencias: response.data, loading: false })
-    } catch (error) {
-      set({ error: error.message, loading: false })
-    }
-  }
-}))
+  addAsistencia: async (asistencia) => {
+    return await handleRequest(() => api.post('/asistencia', asistencia), (data) =>
+      set((state) => ({
+        asistencias: [...state.asistencias, data],
+      }))
+    );
+  },
 
-export default useAsistenciaStore
+  updateAsistencia: async (id, updateData) => {
+    return await handleRequest(() => api.put(`/asistencia/${id}`, updateData), (data) =>
+      set((state) => ({
+        asistencias: state.asistencias.map((asistencia) =>
+          asistencia.id === id ? { ...asistencia, ...data } : asistencia
+        ),
+      }))
+    );
+  },
+
+  deleteAsistencia: async (id) => {
+    await handleRequest(() => api.delete(`/asistencia/${id}`), () =>
+      set((state) => ({
+        asistencias: state.asistencias.filter((asistencia) => asistencia.id !== id),
+      }))
+    );
+  },
+}));
+
+export default useAsistenciaStore;

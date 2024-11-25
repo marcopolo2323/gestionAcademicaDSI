@@ -2,46 +2,73 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const Usuario = require('../models/Usuario');
+const Rol = require('../models/Roles');
 
 exports.login = async (req, res) => {
   try {
     const { username, password } = req.body;
+    
+    console.log('Intentando autenticar usuario:', username);  // Debug log
 
-    // Buscar usuario
-    const user = await Usuario.findOne({ where: { username } });
-
+    // Buscar usuario incluyendo el rol
+    const user = await Usuario.findOne({
+      where: { username, activo: true },
+      include: [{
+        model: Rol,
+        as: 'rol',
+        attributes: ['nombre', 'descripcion']
+      }]
+    });
+    
     if (!user) {
+      console.log('Usuario no encontrado:', username);  // Debug log
       return res.status(401).json({ message: 'Credenciales inválidas' });
     }
+
+    console.log('Usuario encontrado, verificando contraseña');  // Debug log
 
     // Verificar contraseña
     const isMatch = await bcrypt.compare(password, user.password_hash);
-
     if (!isMatch) {
+      console.log('Contraseña incorrecta para usuario:', username);  // Debug log
       return res.status(401).json({ message: 'Credenciales inválidas' });
     }
+
+    console.log('Contraseña correcta, generando token');  // Debug log
+
+    // Actualizar último login
+    await user.update({ ultimo_login: new Date() });
 
     // Generar token JWT
     const token = jwt.sign(
       { 
-        usuario_id: user.usuario_id, 
-        username: user.username, 
-        role: user.role 
-      }, 
-      process.env.JWT_SECRET, 
+        usuario_id: user.usuario_id,
+        username: user.username,
+        role: user.rol.nombre
+      },
+      process.env.JWT_SECRET,
       { expiresIn: '1h' }
     );
 
-    res.json({
+    console.log('Token generado exitosamente');  // Debug log
+
+    // Enviar respuesta
+    const response = {
       usuario_id: user.usuario_id,
       username: user.username,
-      role: user.role,
-      token: token  // Asegúrate de enviar el token
-    });
+      role: user.rol.nombre,
+      token
+    };
+
+    console.log('Enviando respuesta:', { ...response, token: '***' });  // Debug log
+    res.json(response);
 
   } catch (error) {
-    console.error('Error en login:', error);
-    res.status(500).json({ message: 'Error en el servidor' });
+    console.error('Error detallado en login:', error);
+    res.status(500).json({ 
+      message: 'Error en el servidor',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
   }
 };
 

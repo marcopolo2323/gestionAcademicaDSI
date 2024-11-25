@@ -1,10 +1,10 @@
 const Estudiante = require('../models/Estudiante'); // Asegúrate de que el modelo de Estudiante esté definido correctamente
 
 // Crea un nuevo estudiante
-const createEstudianteController = async ({ usuario_id, dni, nombres, apellidos, fecha_nacimiento, direccion, telefono, email }) => {
+const createEstudianteController = async ({ estudiante_id,usuario_id,ciclo_id, dni, nombres, apellidos, fecha_nacimiento, direccion, telefono, email,estado,fecha_registro }) => {
     try {
-        const newEstudiante = await Estudiante.create({ usuario_id, dni, nombres, apellidos, fecha_nacimiento, direccion, telefono, email });
-        return newEstudiante;
+        const newEstudiante = await Estudiante.create({estudiante_id,usuario_id,ciclo_id, dni, nombres, apellidos, fecha_nacimiento, direccion, telefono, email,estado,fecha_registro });
+        return newEstudiante; 
     } catch (error) {
         throw new Error(error.message);
     }

@@ -1,9 +1,9 @@
-const Horario = require('../models/horario'); // Asegúrate de que el modelo de Horario esté definido correctamente
+const Horario = require('../models/Horario'); // Asegúrate de que el modelo de Horario esté definido correctamente
 
 // Crea un nuevo horario
-const createHorarioController = async ({ ciclo, hora, lunes, martes, miercoles, jueves, viernes }) => {
-    try {
-        const newHorario = await Horario.create({ ciclo, hora, lunes, martes, miercoles, jueves, viernes });
+const createHorarioController = async ({ horario_id,dia,horaInicio,horaFin,aula }) => {
+    try { 
+        const newHorario = await Horario.create({  horario_id,dia,horaInicio,horaFin,aula });
         return newHorario;
     } catch (error) {
         throw new Error(error.message);

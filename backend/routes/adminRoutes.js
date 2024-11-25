@@ -1,10 +1,10 @@
 const express = require('express');
 const {
     createAdminController,
-    getAlladminController,
-    updaateAdminByIdController,
+    getAllAdminsController,
+    updatedAdminByIdController,
     deleteAdminByIdController
-} = require('../controllers/AdminControllers'); // Asegúrate de que la ruta al controlador sea correcta
+} = require('../controllers/adminControllers'); // Asegúrate de que la ruta al controlador sea correcta
 
 const adminRouter = express.Router();
 
@@ -22,7 +22,7 @@ adminRouter.post('/', async (req, res) => {
 // Obtener todos los admin
 adminRouter.get('/', async (req, res) => {
     try {
-        const admin = await getAlladminController();
+        const admin = await getAllAdminsController();
         res.status(200).json(admin); // Responde con la lista de admin
     } catch (error) {
         res.status(500).json({ error: error.message }); // Manejo de errores
@@ -34,7 +34,7 @@ adminRouter.put('/:id', async (req, res) => {
     try {
         const admin_id = req.params.id; // Obtiene el ID del estudiante de los parámetros de la ruta
         const adminData = req.body; // Obtiene los datos del cuerpo de la solicitud
-        const updaateAdmin = await updaateAdminByIdController(admin_id, adminData);
+        const updaateAdmin = await updatedAdminByIdController(admin_id, adminData);
 
         if (!updaateAdmin) {
             return res.status(404).json({ message: 'Estudiante no encontrado' }); // Si no se encuentra el estudiante

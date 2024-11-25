@@ -1,19 +1,41 @@
 import axios from 'axios';
-import useStore from '../store/useStore';
 
-// Crear instancia de axios
+// Store reference
+let storeRef = null;
+
+// Function to initialize store reference
+export const initializeStore = (store) => {
+  storeRef = store;
+};
+
+const isDevelopment = import.meta.env.DEV; // Vite's way to check environment
+
+// Create axios instance with enhanced configuration
 const api = axios.create({
-  baseURL: 'http://localhost:3001',
+  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:3001',
   headers: {
     'Content-Type': 'application/json'
+  },
+  timeout: 10000,
+  validateStatus: (status) => {
+    return status >= 200 && status < 500;
   }
 });
 
-// Interceptor de solicitudes para añadir token de autorización
+// Enhanced request interceptor
 api.interceptors.request.use(
   (config) => {
-    // Obtener el token del estado de Zustand
-    const token = useStore.getState().token;
+    const token = storeRef?.getState()?.token;
+    
+    if (isDevelopment) {
+      console.log('🚀 Request:', {
+        url: config.url,
+        method: config.method,
+        headers: config.headers,
+        data: config.data,
+        hasToken: !!token
+      });
+    }
     
     if (token) {
       config.headers['Authorization'] = `Bearer ${token}`;
@@ -21,72 +43,92 @@ api.interceptors.request.use(
     
     return config;
   },
-  (error) => Promise.reject(error)
-);
-
-// Interceptor de respuestas para manejar errores de autorización
-api.interceptors.response.use(
-  (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
-      // Usar logout del store si el token es inválido
-      const logout = useStore.getState().logout;
-      logout();
-      window.location.href = '/login';
-    }
+    console.error('❌ Request Interceptor Error:', error);
     return Promise.reject(error);
   }
 );
 
-// Función genérica para manejar solicitudes
+// Enhanced response interceptor
+api.interceptors.response.use(
+  (response) => {
+    if (isDevelopment) {
+      console.log('✅ Response:', {
+        status: response.status,
+        data: response.data,
+        headers: response.headers
+      });
+    }
+    return response;
+  },
+  (error) => {
+    console.error('❌ Response Error:', {
+      message: error.message,
+      status: error.response?.status,
+      statusText: error.response?.statusText,
+      data: error.response?.data,
+      config: {
+        url: error.config?.url,
+        method: error.config?.method,
+        headers: error.config?.headers,
+        data: error.config?.data
+      }
+    });
+
+    if (error.response) {
+      switch (error.response.status) {
+        case 401:
+          if (storeRef?.getState()?.logout) {
+            storeRef.getState().logout();
+            window.location.href = '/login';
+          }
+          break;
+        case 500:
+          console.error('🔥 Server Error Details:', error.response.data);
+          break;
+      }
+    } else if (error.code === 'ECONNABORTED') {
+      console.error('⏱️ Request timeout');
+    } else if (!error.response) {
+      console.error('🌐 Network Error');
+    }
+
+    return Promise.reject(error);
+  }
+);
+
+// Rest of the code remains the same...
+
 export const handleRequest = async (request, onSuccess, onError) => {
   try {
     const response = await request();
     
-    console.log('API Response:', {
-      status: response.status,
-      data: response.data,
-      headers: response.headers
-    });
-
-    if (onSuccess) {
+    if (onSuccess && typeof onSuccess === 'function') {
       onSuccess(response.data);
     }
     
     return response.data;
   } catch (error) {
-    console.error('API Error:', {
-      message: error.message,
+    const errorMessage = error.response?.data?.message || 
+                        error.response?.data?.error || 
+                        error.message || 
+                        'Error en la solicitud';
+
+    console.error('🔴 Request Handler Error:', {
+      message: errorMessage,
+      originalError: error,
       response: error.response?.data,
-      status: error.response?.status,
-      headers: error.response?.headers
+      status: error.response?.status
     });
 
-    // Manejar diferentes tipos de errores
-    const errorMessage = 
-      error.response?.data?.message || 
-      error.response?.data?.error || 
-      error.message || 
-      'Error en la solicitud';
-
-    if (onError) {
+    if (onError && typeof onError === 'function') {
       onError(errorMessage);
     }
 
-    if (error.response) {
-      // El servidor respondió con un estado de error
-      throw new Error(errorMessage);
-    } else if (error.request) {
-      // La solicitud se hizo pero no se recibió respuesta
-      throw new Error('No se recibió respuesta del servidor');
-    } else {
-      // Algo sucedió al configurar la solicitud
-      throw new Error('Error al realizar la petición');
-    }
+    throw new Error(errorMessage);
   }
 };
 
-// Métodos CRUD genéricos
 export const apiService = {
   get: async (endpoint, params = {}) => {
     return handleRequest(() => api.get(endpoint, { params }));
@@ -100,15 +142,10 @@ export const apiService = {
     return handleRequest(() => api.put(endpoint, data, config));
   },
   
-  patch: async (endpoint, data, config = {}) => {
-    return handleRequest(() => api.patch(endpoint, data, config));
-  },
-  
   delete: async (endpoint, config = {}) => {
     return handleRequest(() => api.delete(endpoint, config));
   }
 };
 
-// Exportaciones
 export { api };
 export default api;

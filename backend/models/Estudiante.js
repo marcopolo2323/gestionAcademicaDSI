@@ -1,6 +1,5 @@
-const { DataTypes } = require('sequelize'); 
+const { DataTypes } = require('sequelize');
 const sequelize = require('../db');
-const Usuario = require('./Usuario'); // Importa el modelo Usuario
 
 const Estudiante = sequelize.define('Estudiante', {
     estudiante_id: {
@@ -13,47 +12,68 @@ const Estudiante = sequelize.define('Estudiante', {
         unique: true,
         allowNull: false,
         references: {
-            model: Usuario, // Referencia directa al modelo Usuario
+            model: 'USUARIOS',
             key: 'usuario_id'
+        }
+    },
+    ciclo_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+            model: 'CICLOS',
+            key: 'ciclo_id'
         }
     },
     dni: {
         type: DataTypes.STRING(15),
         unique: true,
-        allowNull: false
+        allowNull: false,
+        validate: {
+            len: [5, 15]
+        }
     },
     nombres: {
         type: DataTypes.STRING(100),
-        allowNull: false
+        allowNull: false,
+        validate: {
+            len: [2, 100]
+        }
     },
     apellidos: {
-        type: DataTypes.STRING(100), 
-        allowNull: false
+        type: DataTypes.STRING(100),
+        allowNull: false,
+        validate: {
+            len: [2, 100]
+        }
     },
     fecha_nacimiento: {
         type: DataTypes.DATE,
-        allowNull: false
+        allowNull: false,
+        validate: {
+            isDate: true,
+            isBefore: new Date().toString()
+        }
     },
     direccion: {
         type: DataTypes.STRING(255),
         allowNull: true
-    }, 
+    },
     telefono: {
         type: DataTypes.STRING(20),
         allowNull: true
     },
-    email: {
+    email: { 
         type: DataTypes.STRING(100),
         allowNull: true,
         validate: {
-            isEmail: true // Validación para asegurar que el formato del email es correcto
+            isEmail: true
         }
     },
     estado: {
         type: DataTypes.STRING(20),
         defaultValue: 'ACTIVO',
         validate: {
-            isIn: [['ACTIVO', 'INACTIVO', 'GRADUADO', 'RETIRADO']] // Validación para el estado
+            isIn: [['ACTIVO', 'INACTIVO', 'GRADUADO', 'RETIRADO']]
         }
     },
     fecha_registro: {
@@ -61,11 +81,8 @@ const Estudiante = sequelize.define('Estudiante', {
         defaultValue: DataTypes.NOW
     }
 }, {
-    tableName: 'ESTUDIANTES', 
-    timestamps: false 
+    tableName: 'ESTUDIANTES',
+    timestamps: false
 });
-
-// Define la relación entre Estudiante y Usuario
-Estudiante.belongsTo(Usuario, { foreignKey: 'usuario_id' });
 
 module.exports = Estudiante;

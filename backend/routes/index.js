@@ -13,7 +13,9 @@ const {
     RolesControllers,
     UsuarioControllers,
     AuthControllers,
-    horarioControllers
+    horarioControllers,
+    adminControllers,
+    cicloControllers
 } = require('../controllers');
 
 router.use('/asistencia', require('./AsistenciaRoutes'));
@@ -24,9 +26,11 @@ router.use('/estudiante', require('./EstudianteRoutes'));
 router.use('/matricula', require('./MatriculaRoutes'));
 router.use('/planestudio', require('./PlanestudioRoutes'));
 router.use('/profesor', require('./ProfesorRoutes'));
-router.use('/roles', require('./RolesRoutes'));
+router.use('/roles', require('./rolesRoutes'));
 router.use('/usuario', require('./UsuarioRoutes'));
 router.use('/login',require('./authRoutes'))
 router.use('/horario',require('./horarioRoutes'))
+router.use('/admin',require('./adminRoutes'))
+router.use('/ciclo',require('./cicloRoutes'))
 
 module.exports = router;

@@ -1,9 +1,9 @@
 const Curso = require('../models/Curso'); // Asegúrate de que el modelo de Curso esté definido correctamente
 
 // Crea un nuevo curso
-const createCursoController = async ({curso_id, materia_id, profesor_id, periodo_academico, paralelo, cupo_maximo, horario, aula, estado }) => {
-    try {
-        const newCurso = await Curso.create({curso_id, materia_id, profesor_id, periodo_academico, paralelo, cupo_maximo, horario, aula, estado });
+const createCursoController = async ({curso_id, plan_id, profesor_id,horario_id,nombre,codigo, periodo_academico, paralelo, cupo_maximo, aula, estado }) => {
+    try { 
+        const newCurso = await Curso.create({curso_id, plan_id, profesor_id,horario_id,nombre,codigo, periodo_academico, paralelo, cupo_maximo, aula, estado });
         return newCurso;
     } catch (error) {
         throw new Error(error.message);

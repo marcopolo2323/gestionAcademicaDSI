@@ -1,4 +1,7 @@
 // Continuación del PlanEstudioForm
+import React from 'react';
+import useStore from '../../../store/useStore';
+
 const PlanEstudioForm = () => {
     const addPlanEstudio = useStore((state) => state.addPlanEstudio)
     const [formData, setFormData] = React.useState({

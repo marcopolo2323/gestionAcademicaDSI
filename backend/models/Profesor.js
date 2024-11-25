@@ -1,6 +1,5 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../db');
-const Usuario = require('./Usuario'); // Importar el modelo Usuario
 
 const Profesor = sequelize.define('Profesor', {
     profesor_id: {
@@ -10,25 +9,42 @@ const Profesor = sequelize.define('Profesor', {
     },
     usuario_id: {
         type: DataTypes.INTEGER,
+        unique: true,
         allowNull: false,
         references: {
-            model: Usuario, // Referencia directa al modelo Usuario
+            model: 'USUARIOS',
             key: 'usuario_id'
-        },
-        unique: true // Asegura que cada profesor esté vinculado a un único usuario
+        }
+    },
+    ciclo_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+            model: 'CICLOS',
+            key: 'ciclo_id'
+        }
     },
     dni: {
         type: DataTypes.STRING(15),
+        unique: true,
         allowNull: false,
-        unique: true
+        validate: {
+            len: [5, 15]
+        }
     },
     nombres: {
         type: DataTypes.STRING(100),
-        allowNull: false
+        allowNull: false,
+        validate: {
+            len: [2, 100]
+        }
     },
     apellidos: {
         type: DataTypes.STRING(100),
-        allowNull: false
+        allowNull: false,
+        validate: {
+            len: [2, 100]
+        }
     },
     especialidad: {
         type: DataTypes.STRING(100),
@@ -42,7 +58,7 @@ const Profesor = sequelize.define('Profesor', {
         type: DataTypes.STRING(100),
         allowNull: true,
         validate: {
-            isEmail: true // Asegura que el formato de email sea válido
+            isEmail: true
         }
     },
     estado: {
@@ -60,8 +76,5 @@ const Profesor = sequelize.define('Profesor', {
     tableName: 'PROFESORES',
     timestamps: false
 });
-
-// Definir la relación con el modelo Usuario
-Profesor.belongsTo(Usuario, { foreignKey: 'usuario_id' });
 
 module.exports = Profesor;

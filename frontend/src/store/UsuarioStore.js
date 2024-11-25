@@ -3,6 +3,18 @@ import { api, handleRequest } from '../utils/api';
 
 const useUsuarioStore = create((set) => ({
   usuarios: [],
+  roles: [],
+
+  fetchRoles: async () => {
+    try {
+      const response = await api.get('/roles');
+      console.log('Respuesta de roles:', response.data);
+      set({ roles: response.data });
+    } catch (error) {
+      console.error('Error fetching roles:', error);
+      throw error;
+    }
+  },
 
   fetchUsuarios: async () => {
     await handleRequest(() => api.get('/usuario'), (data) =>

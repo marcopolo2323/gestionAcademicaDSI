@@ -1,6 +1,6 @@
+// Curso.js
 const { DataTypes } = require('sequelize');
 const sequelize = require('../db');
-const Profesor = require('./Profesor'); // Importa el modelo Profesor
 
 const Curso = sequelize.define('Curso', {
     curso_id: {
@@ -8,13 +8,49 @@ const Curso = sequelize.define('Curso', {
         primaryKey: true,
         autoIncrement: true
     },
-    profesor_id: {
+    plan_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-            model: Profesor, // Referencia directa al modelo Profesor
+            model: 'PLANES_ESTUDIO',
+            key: 'plan_id'
+        }
+    },
+    profesor_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: { 
+            model: 'PROFESORES',
             key: 'profesor_id'
         }
+    },
+    horario_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+            model: 'HORARIOS',
+            key: 'horario_id'
+        }
+    },
+    ciclo_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+            model: 'CICLOS',
+            key: 'ciclo_id'
+        }
+    },    
+    nombre: {
+        type: DataTypes.STRING(100),
+        allowNull: false,
+        validate: {
+            len: [2, 100]
+        }
+    },
+    codigo: {
+        type: DataTypes.STRING(20),
+        allowNull: false,
+        unique: true
     },
     periodo_academico: {
         type: DataTypes.STRING(20),
@@ -26,11 +62,10 @@ const Curso = sequelize.define('Curso', {
     },
     cupo_maximo: {
         type: DataTypes.INTEGER,
-        allowNull: false
-    },
-    horario: {
-        type: DataTypes.TEXT,
-        allowNull: true
+        allowNull: false,
+        validate: {
+            min: 0
+        }
     },
     aula: {
         type: DataTypes.STRING(50),
@@ -44,11 +79,14 @@ const Curso = sequelize.define('Curso', {
         }
     }
 }, {
-    tableName: 'CURSOS', 
-    timestamps: false 
+    tableName: 'CURSOS',
+    timestamps: false,
+    indexes: [
+        { fields: ['plan_id'] },
+        { fields: ['profesor_id'] },
+        { fields: ['horario_id'] },
+        { fields: ['codigo'] }
+    ]
 });
-
-// Definir relaciones
-Curso.belongsTo(Profesor, { foreignKey: 'profesor_id' });
 
 module.exports = Curso;

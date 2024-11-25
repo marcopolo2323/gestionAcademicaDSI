@@ -1,7 +1,6 @@
+// Matricula.js
 const { DataTypes } = require('sequelize');
 const sequelize = require('../db');
-const Estudiante = require('./Estudiante'); // Importar modelo de Estudiante
-const Curso = require('./Curso'); // Importar modelo de Curso
 
 const Matricula = sequelize.define('Matricula', {
     matricula_id: {
@@ -13,7 +12,7 @@ const Matricula = sequelize.define('Matricula', {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-            model: Estudiante, // Referencia al modelo de Estudiante
+            model: 'ESTUDIANTES',
             key: 'estudiante_id'
         }
     },
@@ -21,14 +20,22 @@ const Matricula = sequelize.define('Matricula', {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-            model: Curso, // Referencia al modelo de Curso
+            model: 'CURSOS',
             key: 'curso_id'
         }
     },
+    ciclo_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+            model: 'CICLOS',
+            key: 'ciclo_id'
+        }
+    },    
     fecha_matricula: {
         type: DataTypes.DATE,
         allowNull: false,
-        defaultValue: DataTypes.NOW, // Valor por defecto de la fecha actual
+        defaultValue: DataTypes.NOW,
         validate: {
             isDate: true
         }
@@ -38,7 +45,7 @@ const Matricula = sequelize.define('Matricula', {
         allowNull: true,
         validate: {
             min: 0.0,
-            max: 100.0
+            max: 20.0
         }
     },
     estado: {
@@ -49,13 +56,12 @@ const Matricula = sequelize.define('Matricula', {
         }
     }
 }, {
-    tableName: 'MATRICULAS', 
-    timestamps: false 
+    tableName: 'MATRICULAS',
+    timestamps: false,
+    indexes: [
+        { fields: ['estudiante_id'] },
+        { fields: ['curso_id'] }
+    ]
 });
 
-// Definir asociaciones (si no están definidas en otro archivo)
-Matricula.belongsTo(Estudiante, { foreignKey: 'estudiante_id' });
-Matricula.belongsTo(Curso, { foreignKey: 'curso_id' });
-
-// Exportar el modelo
 module.exports = Matricula;

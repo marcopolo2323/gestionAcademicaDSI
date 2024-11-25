@@ -1,11 +1,11 @@
 const Asistencia = require('../models/Asistencia'); // Asegúrate de que el modelo de Asistencia esté definido correctamente
 
 // Crea una nueva asistencia
-const createAsistenciaController = async ({asistencia_id, matricula_id, fecha, estado, observacion }) => {
+const createAsistenciaController = async ({asistencia_id, matricula_id, fecha, estado,hora_registro,minutos_atraso, observacion,documento_justificacion }) => {
     try {
-        const newAsistencia = await Asistencia.create({asistencia_id, matricula_id, fecha, estado, observacion });
+        const newAsistencia = await Asistencia.create({asistencia_id, matricula_id, fecha, estado,hora_registro,minutos_atraso, observacion,documento_justificacion});
         return newAsistencia;
-    } catch (error) {
+    } catch (error) { 
         throw new Error(error.message);
     }
 };

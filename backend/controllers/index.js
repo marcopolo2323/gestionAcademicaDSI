@@ -11,5 +11,7 @@ module.exports = {
     RolesController: require('./RolesControllers'),
     UsuarioController: require('./UsuarioControllers'),
     AuthControllers: require('./AuthControllers'),
-    HorarioControllers: require('./horarioControllers')
+    HorarioControllers: require('./horarioControllers'),
+    AdminControllers: require('./adminControllers'),
+    cicloControllers: require('./cicloControllers')
 };

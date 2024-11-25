@@ -4,7 +4,7 @@ const {
     getAllHorariosController,
     updatedHorarioByIdController,
     deleteHorarioByIdController
-} = require('../controllers/HorarioControllers'); // Asegúrate de que la ruta sea correcta
+} = require('../controllers/horarioControllers'); // Asegúrate de que la ruta sea correcta
 
 const router = express.Router();
 

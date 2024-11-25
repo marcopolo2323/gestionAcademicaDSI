@@ -1,4 +1,4 @@
-const Admin = require('../models/admin'); // Asegúrate de que el modelo de Admin esté definido correctamente
+const Admin = require('../models/Admin'); // Asegúrate de que el modelo de Admin esté definido correctamente
 
 // Crea un nuevo Admin
 const createAdminController = async ({ usuario_id, dni, nombres, apellidos, fecha_nacimiento, direccion, telefono, email }) => {

@@ -1,6 +1,6 @@
+// Calificacion.js - Modelo mejorado
 const { DataTypes } = require('sequelize');
 const sequelize = require('../db');
-const Estudiante = require('./Estudiante'); // Si existe relación con Estudiante
 
 const Calificacion = sequelize.define('Calificacion', {
     calificacion_id: {
@@ -10,42 +10,52 @@ const Calificacion = sequelize.define('Calificacion', {
     },
     matricula_id: {
         type: DataTypes.INTEGER,
-        allowNull: false, // Si la matrícula siempre es necesaria
+        allowNull: false,
         references: {
-            model: 'MATRICULAS', // Nombre de la tabla referenciada
+            model: 'MATRICULAS',
             key: 'matricula_id'
         }
     },
     tipo_evaluacion: {
-        type: DataTypes.STRING(50),
-        allowNull: false, // No permitir nulos para el tipo de evaluación
-        validate: {
-            len: [0, 50] // Validación para limitar la longitud del tipo de evaluación
-        }
+        type: DataTypes.ENUM('PARCIAL', 'FINAL', 'PRACTICA', 'LABORATORIO', 'PROYECTO', 'TAREA'),
+        allowNull: false
     },
     nota: {
         type: DataTypes.DECIMAL(5, 2),
         allowNull: false,
         validate: {
-            min: 0, // Validación para que la nota sea mayor o igual a 0
-            max: 20 // Validación para que la nota sea menor o igual a 20
+            min: 0,
+            max: 20
         }
     },
     fecha: {
-        type: DataTypes.DATEONLY, // Usar DATEONLY para solo fecha
-        allowNull: false
+        type: DataTypes.DATEONLY,
+        allowNull: false,
+        validate: {
+            isDate: true,
+            isBefore: new Date(new Date().setDate(new Date().getDate() + 1)).toISOString().split('T')[0]
+        }
     },
     observacion: {
         type: DataTypes.TEXT,
-        allowNull: true // Permitir nulos en observaciones
+        allowNull: true,
+        validate: {
+            len: [0, 500]
+        }
+    },
+    estado: {
+        type: DataTypes.ENUM('REGISTRADO', 'ANULADO', 'EN_REVISION'),
+        defaultValue: 'REGISTRADO'
     }
 }, {
-    tableName: 'CALIFICACIONES', // Asegúrate de que el nombre de la tabla coincida con el de la base de datos
-    timestamps: false // Si no tienes columnas de createdAt y updatedAt en tu tabla
+    tableName: 'CALIFICACIONES',
+    timestamps: false,
+    indexes: [
+        {
+            fields: ['matricula_id', 'tipo_evaluacion'],
+            unique: true
+        }
+    ]
 });
 
-// Relación con Estudiante si es necesario
-Calificacion.belongsTo(Estudiante, { foreignKey: 'matricula_id' });
-
-// Exportar el modelo
-module.exports = Calificacion;
+module.exports=Calificacion

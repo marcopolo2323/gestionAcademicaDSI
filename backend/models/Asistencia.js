@@ -1,43 +1,69 @@
+// Asistencia.js - Modelo mejorado
 const { DataTypes } = require('sequelize');
 const sequelize = require('../db');
-const Matricula = require('./Matricula'); // Importar el modelo de Matricula si es necesario
-
 const Asistencia = sequelize.define('Asistencia', {
     asistencia_id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
-    },
+    }, 
     matricula_id: {
         type: DataTypes.INTEGER,
-        allowNull: true, // Permitir nulos si no siempre se proporciona una matrícula
+        allowNull: false,
         references: {
-            model: 'MATRICULAS', // Nombre de la tabla referenciada
+            model: 'MATRICULAS',
             key: 'matricula_id'
         }
     },
     fecha: {
-        type: DataTypes.DATEONLY, // Usar DATEONLY para solo fecha
-        allowNull: false
-    },
-    estado: {
-        type: DataTypes.STRING(20),
+        type: DataTypes.DATEONLY,
         allowNull: false,
         validate: {
-            isIn: [['PRESENTE', 'AUSENTE', 'JUSTIFICADO', 'ATRASO']] // Validación para el estado
+            isDate: true,
+            isBefore: new Date(new Date().setDate(new Date().getDate() + 1)).toISOString().split('T')[0]
+        }
+    },
+    estado: {
+        type: DataTypes.ENUM('PRESENTE', 'AUSENTE', 'JUSTIFICADO', 'ATRASO', 'PERMISO'),
+        allowNull: false,
+        defaultValue: 'AUSENTE'
+    },
+    hora_registro: {
+        type: DataTypes.TIME,
+        allowNull: false,
+        defaultValue: DataTypes.NOW
+    },
+    minutos_atraso: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        validate: {
+            min: 0,
+            max: 120
         }
     },
     observacion: {
         type: DataTypes.TEXT,
-        allowNull: true // Permitir nulos en observaciones
+        allowNull: true,
+        validate: {
+            len: [0, 500]
+        }
+    },
+    documento_justificacion: {
+        type: DataTypes.STRING(255),
+        allowNull: true,
+        validate: {
+            len: [0, 255]
+        }
     }
 }, {
-    tableName: 'ASISTENCIAS', // Asegúrate de que el nombre de la tabla coincida con el de la base de datos
-    timestamps: false // Si no tienes columnas de createdAt y updatedAt en tu tabla
+    tableName: 'ASISTENCIAS',
+    timestamps: false,
+    indexes: [
+        {
+            fields: ['matricula_id', 'fecha'],
+            unique: true
+        }
+    ]
 });
 
-// Relación con Matricula si es necesario
-Asistencia.belongsTo(Matricula, { foreignKey: 'matricula_id' });
-
-// Exportar el modelo
-module.exports = Asistencia;
+module.exports=Asistencia;

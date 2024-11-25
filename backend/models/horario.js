@@ -1,6 +1,9 @@
-module.exports = (sequelize) => {
-    const Horario = sequelize.define('Horario', {
-      id: {
+//Horario
+const { DataTypes } = require('sequelize');
+const sequelize = require('../db');
+
+const Horario = sequelize.define('Horario', {
+      horario_id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
@@ -15,9 +18,29 @@ module.exports = (sequelize) => {
       },
       horaFin: {
         type: DataTypes.TIME,
-        allowNull: false
-      },
+        allowNull: false,
+        validate: {
+          isAfterInicio(value) {
+              if (!this.horaInicio) {
+                  throw new Error('La hora de inicio no está definida.');
+              }
+              if (value <= this.horaInicio) {
+                  throw new Error('La hora de fin debe ser posterior a la hora de inicio.');
+              }
+          }
+      }
+      
+    },
       aula: DataTypes.STRING
+    },{
+      tableName: 'HORARIOS',
+      timestamps: false,
+      indexes: [
+        {
+            fields: ['dia', 'horaInicio', 'aula'],
+            unique: true
+        }
+    ]
     });
-    return Horario;
-  };
+
+    module.exports = Horario;

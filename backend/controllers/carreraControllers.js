@@ -7,7 +7,7 @@ const createCarreraController = async ({carrera_id, nombre, descripcion, duracio
         return newCarrera;
     } catch (error) {
         throw new Error(error.message);
-    }
+    } 
 };
 
 // Obtener todas las carreras
