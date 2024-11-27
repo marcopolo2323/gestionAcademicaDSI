@@ -7,23 +7,37 @@ const useCicloStore = create((set) => ({
   error: null,
 
   fetchCiclos: async () => {
-    set({ isLoading: true, error: null });
+    set({ isLoading: true, error: null }); 
     try {
       const response = await api.get('/ciclo');
-      console.log('Respuesta de ciclos:', response.data);
+      console.log('Ciclos full response:', response);
+      console.log('Ciclos response data:', response.data);
+      
+      // Ensure you're setting the correct data
+      // Check if response.data is an array or has a data property
+      const ciclosData = Array.isArray(response.data) 
+        ? response.data 
+        : response.data.data || [];
+
+      console.log('Processed ciclos data:', ciclosData);
+      
       set({ 
-        ciclos: response.data,
+        ciclos: ciclosData,
         isLoading: false 
       });
+      
+      return ciclosData;
     } catch (error) {
       console.error('Error fetching ciclos:', error);
       set({ 
         error: error.message, 
-        isLoading: false 
+        isLoading: false,
+        ciclos: [] 
       });
       throw error;
     }
   },
+
 
   addCiclo: async (Ciclo) => {
     set({ isLoading: true, error: null });

@@ -8,7 +8,7 @@ const usePlanEstudioStore = create((set) => ({
     await handleRequest(() => api.get('/planestudio'), (data) =>
       set({ planes: data })
     );
-  },
+  }, 
 
   addPlan: async (planData) => {
     // Add date handling for fecha_inicio and fecha_fin

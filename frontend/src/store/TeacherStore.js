@@ -13,7 +13,7 @@ const useTeacherStore = create((set) => ({
       console.log('Respuesta del servidor:', response.data);
       
       set((state) => ({
-        teachers: [...state.teachers, response.data],
+        teachers: [...state.teachers, response.data], 
         isLoading: false
       }));
       
@@ -30,9 +30,34 @@ const useTeacherStore = create((set) => ({
   
   fetchTeachers: async () => {
     set({ isLoading: true, error: null });
-    await handleRequest(() => api.get('/profesor'), (data) =>
-      set({ teachers: data, isLoading: false })
-    ).catch((error) => set({ error: error.message, isLoading: false }));
+    try {
+      const response = await api.get('/profesor');
+      console.log('Teachers full response:', response);
+      console.log('Teachers response data:', response.data);
+      
+      // Ensure you're setting the correct data
+      // Check if response.data is an array or has a data property
+      const teachersData = Array.isArray(response.data) 
+        ? response.data 
+        : response.data.data || [];
+
+      console.log('Processed teachers data:', teachersData);
+      
+      set({ 
+        teachers: teachersData,
+        isLoading: false 
+      });
+      
+      return teachersData;
+    } catch (error) {
+      console.error('Error fetching teachers:', error);
+      set({ 
+        error: error.message, 
+        isLoading: false,
+        teachers: [] 
+      });
+      throw error;
+    }
   },
 
 

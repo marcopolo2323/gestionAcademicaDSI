@@ -21,7 +21,7 @@ const useCursoStore = create((set) => ({
       return response.data;
     } catch (error) {
       console.error('Detailed error fetching cursos by ciclo:', error.response || error);
-      set({ cursosEnCiclo: [] });
+      set({ cursosEnCiclo: [] }); 
       return [];
     }
   },

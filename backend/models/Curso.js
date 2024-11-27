@@ -63,7 +63,7 @@ const Curso = sequelize.define('Curso', {
     cupo_maximo: {
         type: DataTypes.INTEGER,
         allowNull: false,
-        validate: {
+        validate: { 
             min: 0
         }
     },

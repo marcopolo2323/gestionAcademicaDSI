@@ -2,20 +2,23 @@ import { create } from 'zustand';
 import { api, handleRequest } from '../utils/api';
 
 const useHorarioStore = create((set) => ({
-  horarios: [],
+  horarios: [], // Initialize as an empty array
 
-  fetchHorarios: async (cicloId) => {
-    await handleRequest(() => api.get(`/horario/ciclo/${cicloId}`), (data) =>
-      set({ horarios: data })
-    );
+  fetchHorarios: async () => { // Remove cicloId parameter
+    try {
+      const response = await api.get('/horario'); // Fetch all horarios
+      set({ horarios: response.data || [] }); // Ensure it's always an array
+    } catch (error) {
+      console.error('Error fetching horarios:', error);
+      set({ horarios: [] }); // Set to empty array on error
+    }
   },
 
-  addHorario: async (horarios) => {
-    // Ahora enviamos los horarios asociados a un ciclo específico
+  addHorario: async (horarioData) => {
     return await handleRequest(
-      () => api.post('/horario', { horarios }),
+      () => api.post('/horario', horarioData),
       (data) => set((state) => ({
-        horarios: [...state.horarios, ...data]
+        horarios: [...state.horarios, data]
       }))
     );
   },
