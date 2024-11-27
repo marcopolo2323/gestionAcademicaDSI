@@ -1,11 +1,22 @@
 const PlanEstudio = require('../models/Planestudio'); // Asegúrate de que el modelo de PlanEstudio esté definido correctamente
 
 // Crea un nuevo plan de estudio
-const createPlanEstudioController = async ({ plan_id, carrera_id, codigo, fecha_inicio, fecha_fin, estado }) => {
+const createPlanEstudioController = async (planData) => {
     try {
-        const newPlanEstudio = await PlanEstudio.create({ plan_id, carrera_id, codigo, fecha_inicio, fecha_fin, estado });
+        // Remove plan_id from data if it exists to allow auto-increment
+        const { plan_id, ...dataToCreate } = planData;
+        
+        // Add default values if not provided
+        const completeData = {
+            fecha_inicio: new Date(),
+            estado: 'ACTIVO',
+            ...dataToCreate
+        };
+
+        const newPlanEstudio = await PlanEstudio.create(completeData);
         return newPlanEstudio;
     } catch (error) {
+        console.error('Error creating Plan de Estudio:', error);
         throw new Error(error.message);
     }
 };

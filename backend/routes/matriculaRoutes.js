@@ -17,13 +17,13 @@ router.post('/', async (req, res) => {
     }
 });
 
-// Ruta para obtener todas las matrículas
+// Cambia '/api/matriculas' a '/api/matricula'
 router.get('/', async (req, res) => {
     try {
         const matriculas = await getAllMatriculasController();
-        res.status(200).json(matriculas); // Retorna todas las matrículas con un código 200
+        res.status(200).json(matriculas);
     } catch (error) {
-        res.status(500).json({ error: error.message }); // Retorna un error si ocurre
+        res.status(500).json({ error: error.message });
     }
 });
 

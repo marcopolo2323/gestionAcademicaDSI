@@ -16,14 +16,6 @@ const Profesor = sequelize.define('Profesor', {
             key: 'usuario_id'
         }
     },
-    ciclo_id: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-            model: 'CICLOS',
-            key: 'ciclo_id'
-        }
-    },
     dni: {
         type: DataTypes.STRING(15),
         unique: true,
@@ -54,7 +46,7 @@ const Profesor = sequelize.define('Profesor', {
         type: DataTypes.STRING(20),
         allowNull: true
     },
-    email: {
+    email: { 
         type: DataTypes.STRING(100),
         allowNull: true,
         validate: {

@@ -11,10 +11,15 @@ const router = express.Router();
 // Ruta para crear un nuevo plan de estudio
 router.post('/', async (req, res) => {
     try {
+        console.log('Received Plan Data:', req.body);
         const newPlan = await createPlanEstudioController(req.body);
-        res.status(201).json(newPlan); // Retorna el nuevo plan creado
+        res.status(201).json(newPlan);
     } catch (error) {
-        res.status(400).json({ message: error.message }); // Manejo de errores
+        console.error('Full Error Details:', error);
+        res.status(400).json({ 
+            message: error.message,
+            details: error.errors ? error.errors.map(e => e.message) : null
+        });
     }
 });
 

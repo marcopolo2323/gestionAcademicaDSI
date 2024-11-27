@@ -35,6 +35,27 @@ const useStudentStore = create((set) => ({
       }))
     );
   },
+
+  fetchStudentsByCiclo: async (cicloId) => {
+    try {
+      console.log('Fetching students for ciclo:', cicloId); // Add logging
+      const response = await api.get(`/estudiante/ciclo/${cicloId}`);
+      console.log('Students response:', response.data); // Log the response
+  
+      const studentsData = response.data;
+      set({ students: studentsData });
+      
+      return studentsData;
+    } catch (error) {
+      console.error('Detailed error fetching students by ciclo:', error);
+      console.error('Error details:', 
+        error.response ? error.response.data : error.message
+      );
+      set({ students: [] });
+      throw error;
+    }
+  },
+
 }));
 
 export default useStudentStore;

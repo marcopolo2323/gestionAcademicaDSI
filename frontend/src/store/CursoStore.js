@@ -3,6 +3,7 @@ import { api, handleRequest } from '../utils/api';
 
 const useCursoStore = create((set) => ({
   cursos: [],
+  cursosEnCiclo: [], // Nuevo estado para cursos filtrados por ciclo
 
   fetchCursos: async () => {
     await handleRequest(() => api.get('/curso'), (data) =>
@@ -10,6 +11,22 @@ const useCursoStore = create((set) => ({
     );
   },
 
+  // Nueva función para filtrar cursos por ciclo
+  fetchCursosByCiclo: async (cicloId) => {
+    try {
+      console.log('Fetching courses for ciclo:', cicloId);
+      const response = await api.get(`/curso/ciclo/${cicloId}`);
+      console.log('Courses response:', response.data);
+      set({ cursosEnCiclo: response.data });
+      return response.data;
+    } catch (error) {
+      console.error('Detailed error fetching cursos by ciclo:', error.response || error);
+      set({ cursosEnCiclo: [] });
+      return [];
+    }
+  },
+
+  // Resto de las funciones existentes...
   addCurso: async (curso) => {
     return await handleRequest(() => api.post('/curso', curso), (data) =>
       set((state) => ({

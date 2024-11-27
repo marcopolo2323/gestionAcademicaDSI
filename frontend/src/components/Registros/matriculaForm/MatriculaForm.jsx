@@ -1,4 +1,3 @@
-// MatriculaManagement.jsx
 import { useState, useEffect } from 'react';
 import useMatriculaStore from '../../../store/MatriculaStore';
 import useStudentStore from '../../../store/StudentStore';
@@ -14,11 +13,11 @@ const MatriculaManagement = () => {
     fetchMatriculas, 
     createMatricula, 
     updateMatricula,
-    deleteMatricula 
+    deleteMatricula
   } = useMatriculaStore();
   
-  const { students, fetchStudents } = useStudentStore();
-  const { cursos, fetchCursos } = useCursoStore();
+  const { students, fetchStudents, fetchStudentsByCiclo } = useStudentStore();
+  const { cursos, fetchCursos, fetchCursosByCiclo, cursosEnCiclo } = useCursoStore();
   const { ciclos, fetchCiclos } = useCicloStore();
 
   // Local state
@@ -26,7 +25,6 @@ const MatriculaManagement = () => {
     estudiante_id: '',
     curso_id: '',
     ciclo_id: '',
-    nota_final: '',
     estado: 'MATRICULADO'
   });
   const [isEditing, setIsEditing] = useState(false);
@@ -41,7 +39,8 @@ const MatriculaManagement = () => {
         await Promise.all([
           fetchMatriculas(),
           fetchCiclos(),
-          fetchCursos()
+          fetchCursos(),
+          fetchStudents()
         ]);
       } catch (error) {
         console.error('Error loading data:', error);
@@ -49,25 +48,57 @@ const MatriculaManagement = () => {
     };
 
     loadData();
-  }, []);
+  }, [fetchMatriculas, fetchCiclos, fetchCursos, fetchStudents]);
 
   // Filtrar estudiantes cuando cambia el ciclo
   useEffect(() => {
-    const loadStudentsByCiclo = async () => {
+    const loadStudentsByCiclo = async () => { 
       if (selectedCiclo) {
         try {
-          const response = await axios.get(`/api/students/ciclo/${selectedCiclo}`);
-          setFilteredStudents(response.data);
+          const studentsData = await fetchStudentsByCiclo(selectedCiclo);
+          
+          console.log('Received students data:', studentsData);
+          
+          if (!studentsData || studentsData.length === 0) {
+            console.warn('No students found for this ciclo');
+            setFilteredStudents([]);
+            return;
+          }
+  
+          const filteredStudentsData = studentsData.map(student => {
+            console.log('Processing student:', student);
+            return {
+              id: student.estudiante_id || student.id,
+              nombre: student.nombres || student.nombre || 'Sin nombre'
+            };
+          });
+          
+          setFilteredStudents(filteredStudentsData);
         } catch (error) {
-          console.error('Error loading students by ciclo:', error);
+          console.error('Comprehensive error fetching students:', error);
+          setFilteredStudents([]);
         }
       } else {
         setFilteredStudents([]);
       }
     };
-
+    
     loadStudentsByCiclo();
-  }, [selectedCiclo]);
+  }, [selectedCiclo, fetchStudentsByCiclo]);
+
+  useEffect(() => {
+    const loadCursosByCiclo = async () => { 
+      if (selectedCiclo) {
+        try {
+          await fetchCursosByCiclo(selectedCiclo);
+        } catch (error) {
+          console.error('Detailed error loading cursos by ciclo:', error);
+        }
+      }
+    };
+    
+    loadCursosByCiclo();
+  }, [selectedCiclo, fetchCursosByCiclo]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -88,11 +119,11 @@ const MatriculaManagement = () => {
       setFormData({
         estudiante_id: '',
         curso_id: '',
-        nota_final: '',
         estado: 'MATRICULADO'
       });
       setIsEditing(false);
       setEditId(null);
+      setSelectedCiclo('');
       
       // Recargar datos
       await fetchMatriculas();
@@ -101,7 +132,27 @@ const MatriculaManagement = () => {
     }
   };
 
-  // ... resto de funciones handleEdit y handleDelete permanecen igual ...
+  // Función para manejar edición de matrícula
+  const handleEdit = (matricula) => {
+    setIsEditing(true);
+    setEditId(matricula.matricula_id);
+    setSelectedCiclo(matricula.ciclo_id);
+    setFormData({
+      estudiante_id: matricula.estudiante_id,
+      curso_id: matricula.curso_id,
+      estado: matricula.estado
+    });
+  };
+
+  // Función para manejar eliminación de matrícula
+  const handleDelete = async (matriculaId) => {
+    try {
+      await deleteMatricula(matriculaId);
+      await fetchMatriculas();
+    } catch (error) {
+      console.error('Error deleting matricula:', error);
+    }
+  };
 
   if (loading) {
     return <div>Cargando...</div>;
@@ -122,17 +173,22 @@ const MatriculaManagement = () => {
               <select
                 value={selectedCiclo}
                 onChange={(e) => {
-                  setSelectedCiclo(e.target.value);
+                  const cicloId = e.target.value;
+                  setSelectedCiclo(cicloId);
                   setFormData({
                     ...formData,
-                    estudiante_id: '', // Reset student selection when cycle changes
+                    estudiante_id: '', 
+                    curso_id: ''
                   });
                 }}
                 required
               >
                 <option value="">Seleccionar Ciclo</option>
-                {Array.isArray(ciclos) && ciclos.map(ciclo => (
-                  <option key={ciclo.ciclo_id} value={ciclo.ciclo_id}>
+                {ciclos.map(ciclo => (
+                  <option 
+                    key={ciclo.ciclo_id} 
+                    value={ciclo.ciclo_id}
+                  >
                     {ciclo.numero_ciclo}
                   </option>
                 ))}
@@ -145,13 +201,23 @@ const MatriculaManagement = () => {
               Estudiante:
               <select
                 value={formData.estudiante_id}
-                onChange={(e) => setFormData({...formData, estudiante_id: e.target.value})}
+                onChange={(e) => {
+                  const estudianteId = e.target.value;
+                  setFormData({
+                    ...formData, 
+                    estudiante_id: estudianteId,
+                    curso_id: '' // Reset curso when student changes
+                  });
+                }}
                 required
                 disabled={!selectedCiclo}
               >
                 <option value="">Seleccionar Estudiante</option>
-                {Array.isArray(filteredStudents) && filteredStudents.map(student => (
-                  <option key={student.id} value={student.id}>
+                {filteredStudents.map(student => (
+                  <option 
+                    key={student.id} 
+                    value={student.id}
+                  >
                     {student.nombre}
                   </option>
                 ))}
@@ -159,9 +225,42 @@ const MatriculaManagement = () => {
             </label>
           </div>
 
-          {/* Rest of the form remains the same */}
-          
-          {/* ... existing curso, nota_final, and estado fields ... */}
+          <div>
+            <label>
+              Curso:
+              <select
+                value={formData.curso_id}
+                onChange={(e) => setFormData({...formData, curso_id: e.target.value})}
+                required
+                disabled={!selectedCiclo}
+              >
+                <option value="">Seleccionar Curso</option>
+                {cursosEnCiclo.map(curso => (
+                  <option key={curso.id} value={curso.id}>
+                    {curso.nombre}
+                  </option>
+                ))}
+              </select>
+            </label>
+          </div>
+
+          <div>
+            <label>
+              Estado:
+              <select
+                value={formData.estado}
+                onChange={(e) => setFormData({...formData, estado: e.target.value})}
+              >
+                <option value="MATRICULADO">Matriculado</option>
+                <option value="APROBADO">Aprobado</option>
+                <option value="DESAPROBADO">Desaprobado</option>
+              </select>
+            </label>
+          </div>
+
+          <button type="submit">
+            {isEditing ? 'Actualizar Matrícula' : 'Crear Matrícula'}
+          </button>
         </form>
       </div>
 
@@ -175,37 +274,28 @@ const MatriculaManagement = () => {
               <th>Estudiante</th>
               <th>Curso</th>
               <th>Fecha</th>
-              <th>Nota Final</th>
               <th>Estado</th>
               <th>Acciones</th>
             </tr>
           </thead>
           <tbody>
-            {Array.isArray(matriculas) && matriculas.map((matricula) => (
+            {matriculas.map((matricula) => (
               <tr key={matricula.matricula_id}>
                 <td>{matricula.matricula_id}</td>
                 <td>
-                  {Array.isArray(ciclos) && 
-                    ciclos.find(c => c.ciclo_id === matricula.ciclo_id)?.numero_ciclo}
+                  {ciclos.find(c => c.ciclo_id === matricula.ciclo_id)?.numero_ciclo}
                 </td>
                 <td>
-                  {Array.isArray(students) && 
-                    students.find(s => s.id === matricula.estudiante_id)?.nombre}
+                  {students.find(s => s.id === matricula.estudiante_id)?.nombre}
                 </td>
                 <td>
-                  {Array.isArray(cursos) && 
-                    cursos.find(c => c.id === matricula.curso_id)?.nombre}
+                  {cursos.find(c => c.id === matricula.curso_id)?.nombre}
                 </td>
                 <td>{new Date(matricula.fecha_matricula).toLocaleDateString()}</td>
-                <td>{matricula.nota_final}</td>
                 <td>{matricula.estado}</td>
                 <td>
-                  <button onClick={() => handleEdit(matricula)}>
-                    Editar
-                  </button>
-                  <button onClick={() => handleDelete(matricula.matricula_id)}>
-                    Eliminar
-                  </button>
+                  <button onClick={() => handleEdit(matricula)}>Editar</button>
+                  <button onClick={() => handleDelete(matricula.matricula_id)}>Eliminar</button>
                 </td>
               </tr>
             ))}

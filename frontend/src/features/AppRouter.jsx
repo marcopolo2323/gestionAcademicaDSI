@@ -10,7 +10,6 @@ import Dashboard from './../pages/dashboard/DashBoard';
 import StudentPage from './../pages/studentPage/StudentPage';
 import TeacherDashboard from './../components/teacherDashboard/TeacherDashboard';
 import useStore from '../store/useStore';
-import RolesForm from '../components/Registros/rolesForm/RolesForm';
 import CarreraForm from '../components/Registros/carreraForm/CarreraForm';
 import AsistenciaForm from '../components/Registros/asistenciaForm/AsistenciaForm';
 import CalificacionForm from '../components/Registros/calificacionForm/CalificacionForm';
@@ -18,7 +17,6 @@ import CursoForm from '../components/Registros/cursosForm/CursosForm';
 import RegistroHorario from '../components/Registros/horarioForm/Horario';
 import PlanEstudioForm from '../components/Registros/planDeEstudioForm/PlanEstudioForm';
 import MatriculaManagement from '../components/Registros/matriculaForm/MatriculaForm';
-import CicloForm from '../components/Registros/cicloForm/cicloForm';
 
 const PrivateRoute = ({ children, role }) => {
   const { user, logout } = useStore();
@@ -56,17 +54,15 @@ const AppRouter = () => {
   return (
     <Routes>
       <Route path="/" element={<Home />} />
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/register" element={<RegisterPage />} />
-      <Route path='/rol' element={<RolesForm/>}/>
       <Route path='/carrera' element={<CarreraForm/>}/>
-      <Route path='/asistencia' element={<AsistenciaForm/>}/>
-      <Route path='/calificaciones' element={<CalificacionForm/>}/>
-      <Route path='/cursos' element={<CursoForm/>}/>
-      <Route path='/horario' element={<RegistroHorario/>}/>
-      <Route path='/matricula' element={<MatriculaManagement/>}/>
       <Route path='/plan-estudios' element={<PlanEstudioForm/>}/>
-      <Route path='/ciclo' element={<CicloForm/>}/>
+      <Route path="/register" element={<RegisterPage />} />
+      <Route path='/cursos' element={<CursoForm/>}/>
+      <Route path='/matricula' element={<MatriculaManagement/>}/>
+      <Route path='/horario' element={<RegistroHorario/>}/>
+      <Route path='/calificaciones' element={<CalificacionForm/>}/>
+      <Route path='/asistencia' element={<AsistenciaForm/>}/>
+      <Route path="/login" element={<LoginPage />} />
       <Route 
         path="/dashboard" 
         element={

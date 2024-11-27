@@ -28,12 +28,14 @@ const RegisterForm = () => {
   const { addUsuario, fetchRoles, roles } = useUsuarioStore();
   const { addStudent } = useStudentStore();
   const { addTeacher } = useTeacherStore();
-  const { Ciclos, fetchCiclos } = useCicloStore();
+  const { ciclos, fetchCiclos } = useCicloStore();
 
   useEffect(() => {
     const loadData = async () => {
       try {
         await fetchCiclos();
+        console.log('Ciclos fetched:', ciclos); // Add this line
+      console.log('Number of ciclos:', ciclos?.length || 0); // And this line
         await fetchRoles();
       } catch (err) {
         console.error('Error loading data:', err);
@@ -46,7 +48,6 @@ const RegisterForm = () => {
   const validateForm = () => {
     const errors = {};
     
-    // Existing validations...
     if (formData.username.length < 4 || formData.username.length > 20) {
       errors.username = 'El username debe tener entre 4 y 20 caracteres';
     }
@@ -63,7 +64,7 @@ const RegisterForm = () => {
       errors.email = 'Email inválido';
     }
 
-    const requiredFields = ['nombres', 'apellidos', 'ciclo_id'];
+    const requiredFields = ['nombres', 'apellidos', 'dni', 'email'];
     requiredFields.forEach(field => {
       if (!formData[field]) {
         errors[field] = 'Este campo es requerido';
@@ -74,10 +75,16 @@ const RegisterForm = () => {
       if (!formData.fechaNacimiento) {
         errors.fechaNacimiento = 'La fecha de nacimiento es requerida';
       }
+      
+      if (!formData.ciclo_id) {
+        errors.ciclo_id = 'El ciclo es requerido';
+      }
     }
 
-    if (formData.userType === 'teacher' && !formData.especialidad.trim()) {
-      errors.especialidad = 'La especialidad es requerida para profesores';
+    if (formData.userType === 'teacher') {
+      if (formData.especialidad && formData.especialidad.trim().length < 2) {
+        errors.especialidad = 'La especialidad debe tener al menos 2 caracteres si se proporciona';
+      }
     }
 
     return errors;
@@ -132,33 +139,36 @@ const RegisterForm = () => {
         throw new Error('No se pudo crear el usuario correctamente');
       }
   
-      const commonData = {
-        usuario_id: usuarioResponse.usuario_id,
-        dni: formData.dni.trim(),
-        nombres: formData.nombres.trim(),
-        apellidos: formData.apellidos.trim(),
-        telefono: formData.telefono.trim(),
-        email: formData.email.trim().toLowerCase(),
-        estado: 'ACTIVO',
-        ciclo_id: parseInt(formData.ciclo_id)
-      };
-  
-      let finalData;
       if (formData.userType === 'student') {
-        finalData = {
-          ...commonData,
+        const studentData = {
+          usuario_id: usuarioResponse.usuario_id,
+          dni: formData.dni.trim(),
+          nombres: formData.nombres.trim(),
+          apellidos: formData.apellidos.trim(),
+          telefono: formData.telefono.trim() || null,
+          email: formData.email.trim().toLowerCase(),
+          estado: 'ACTIVO',
+          ciclo_id: parseInt(formData.ciclo_id),
           fecha_nacimiento: new Date(formData.fechaNacimiento).toISOString(),
-          direccion: formData.direccion.trim()
+          direccion: formData.direccion.trim() || null
         };
-        console.log('Datos estudiante a enviar:', finalData);
-        await addStudent(finalData);
+        
+        console.log('Datos estudiante a enviar:', studentData);
+        await addStudent(studentData);
       } else {
-        finalData = {
-          ...commonData,
-          especialidad: formData.especialidad.trim()
+        const teacherData = {
+          usuario_id: usuarioResponse.usuario_id,
+          dni: formData.dni.trim(),
+          nombres: formData.nombres.trim(),
+          apellidos: formData.apellidos.trim(),
+          especialidad: formData.especialidad.trim() || null,
+          telefono: formData.telefono.trim() || null,
+          email: formData.email.trim().toLowerCase(),
+          estado: 'ACTIVO'
         };
-        console.log('Datos profesor a enviar:', finalData);
-        await addTeacher(finalData);
+        
+        console.log('Datos profesor a enviar:', teacherData);
+        await addTeacher(teacherData);
       }
   
       setSuccess('¡Registro exitoso!');
@@ -173,72 +183,18 @@ const RegisterForm = () => {
 
   return (
     <form onSubmit={handleRegister} className="space-y-4 max-w-md mx-auto p-4">
-      {/* Username and Password fields */}
-      {/* Ciclo Selection - Added console.log */}
-      <div>
-        <select
-          name="ciclo_id"
-          value={formData.ciclo_id}
-          onChange={handleInputChange}
-          className={`w-full p-2 border rounded ${formErrors.ciclo_id ? 'border-red-500' : ''}`}
-          required
-        >
-          <option value="">Seleccionar Ciclo</option>
-          {Array.isArray(Ciclos) && Ciclos.map((ciclo) => (
-            <option key={ciclo.ciclo_id} value={ciclo.ciclo_id}>
-              Ciclo {ciclo.numero_ciclo}
-            </option>
-          ))}
-        </select>
-        {formErrors.ciclo_id && (
-          <p className="text-red-500 text-sm mt-1">{formErrors.ciclo_id}</p>
-        )}
-        {/* Debug info
-        <p className="text-xs text-gray-500 mt-1">
-          Ciclos disponibles: {Ciclos?.length || 0}
-        </p> */}
-      </div>
-
-      <div className="space-y-2">
-        <div>
-          <input
-            type="text"
-            name="username"
-            value={formData.username}
-            onChange={handleInputChange}
-            placeholder="Username"
-            className={`w-full p-2 border rounded ${formErrors.username ? 'border-red-500' : ''}`}
-            required
-          />
-          {formErrors.username && (
-            <p className="text-red-500 text-sm mt-1">{formErrors.username}</p>
-          )}
-        </div>
-
-        <div>
-          <input
-            type="password"
-            name="password"
-            value={formData.password}
-            onChange={handleInputChange}
-            placeholder="Password"
-            className={`w-full p-2 border rounded ${formErrors.password ? 'border-red-500' : ''}`}
-            required
-          />
-          {formErrors.password && (
-            <p className="text-red-500 text-sm mt-1">{formErrors.password}</p>
-          )}
-        </div>
-      </div>
-
       {/* User Type Selection */}
-      <div className="flex gap-4">
+      <div className="flex gap-4 justify-center mb-4">
         <label className="flex items-center">
           <input
             type="radio"
             name="userType"
             checked={formData.userType === 'student'}
-            onChange={() => setFormData(prev => ({ ...prev, userType: 'student' }))}
+            onChange={() => setFormData(prev => ({ 
+              ...prev, 
+              userType: 'student',
+              especialidad: '' 
+            }))}
             className="mr-2"
           />
           Estudiante
@@ -248,34 +204,132 @@ const RegisterForm = () => {
             type="radio"
             name="userType"
             checked={formData.userType === 'teacher'}
-            onChange={() => setFormData(prev => ({ ...prev, userType: 'teacher' }))}
+            onChange={() => setFormData(prev => ({ 
+              ...prev, 
+              userType: 'teacher',
+              ciclo_id: '',
+              fechaNacimiento: '',
+              direccion: ''
+            }))}
             className="mr-2"
           />
           Profesor
         </label>
       </div>
 
-      {/* Campos comunes */}
-      {['dni', 'nombres', 'apellidos', 'email'].map((field) => (
-        <div key={field}>
-          <input
-            type={field === 'email' ? 'email' : 'text'}
-            name={field}
-            value={formData[field]}
-            onChange={handleInputChange}
-            placeholder={field.charAt(0).toUpperCase() + field.slice(1)}
-            className={`w-full p-2 border rounded ${formErrors[field] ? 'border-red-500' : ''}`}
-            required
-          />
-          {formErrors[field] && (
-            <p className="text-red-500 text-sm mt-1">{formErrors[field]}</p>
-          )}
-        </div>
-      ))}
+      {/* Common Input Fields */}
+      <div className="space-y-2">
+        <input
+          type="text"
+          name="username"
+          value={formData.username}
+          onChange={handleInputChange}
+          placeholder="Username"
+          className={`w-full p-2 border rounded ${formErrors.username ? 'border-red-500' : ''}`}
+          required
+        />
+        {formErrors.username && (
+          <p className="text-red-500 text-sm mt-1">{formErrors.username}</p>
+        )}
 
-      {/* Campos específicos de estudiante */}
+        <input
+          type="password"
+          name="password"
+          value={formData.password}
+          onChange={handleInputChange}
+          placeholder="Password"
+          className={`w-full p-2 border rounded ${formErrors.password ? 'border-red-500' : ''}`}
+          required
+        />
+        {formErrors.password && (
+          <p className="text-red-500 text-sm mt-1">{formErrors.password}</p>
+        )}
+
+        <input
+          type="text"
+          name="dni"
+          value={formData.dni}
+          onChange={handleInputChange}
+          placeholder="DNI"
+          className={`w-full p-2 border rounded ${formErrors.dni ? 'border-red-500' : ''}`}
+          required
+        />
+        {formErrors.dni && (
+          <p className="text-red-500 text-sm mt-1">{formErrors.dni}</p>
+        )}
+
+        <input
+          type="text"
+          name="nombres"
+          value={formData.nombres}
+          onChange={handleInputChange}
+          placeholder="Nombres"
+          className={`w-full p-2 border rounded ${formErrors.nombres ? 'border-red-500' : ''}`}
+          required
+        />
+        {formErrors.nombres && (
+          <p className="text-red-500 text-sm mt-1">{formErrors.nombres}</p>
+        )}
+
+        <input
+          type="text"
+          name="apellidos"
+          value={formData.apellidos}
+          onChange={handleInputChange}
+          placeholder="Apellidos"
+          className={`w-full p-2 border rounded ${formErrors.apellidos ? 'border-red-500' : ''}`}
+          required
+        />
+        {formErrors.apellidos && (
+          <p className="text-red-500 text-sm mt-1">{formErrors.apellidos}</p>
+        )}
+
+        <input
+          type="email"
+          name="email"
+          value={formData.email}
+          onChange={handleInputChange}
+          placeholder="Email"
+          className={`w-full p-2 border rounded ${formErrors.email ? 'border-red-500' : ''}`}
+          required
+        />
+        {formErrors.email && (
+          <p className="text-red-500 text-sm mt-1">{formErrors.email}</p>
+        )}
+
+        <input
+          type="text"
+          name="telefono"
+          value={formData.telefono}
+          onChange={handleInputChange}
+          placeholder="Teléfono (opcional)"
+          className="w-full p-2 border rounded"
+        />
+      </div>
+
+      {/* Student-specific Fields */}
       {formData.userType === 'student' && (
         <>
+          <div>
+            <select
+              name="ciclo_id"
+              value={formData.ciclo_id}
+              onChange={handleInputChange}
+              className={`w-full p-2 border rounded ${formErrors.ciclo_id ? 'border-red-500' : ''}`}
+              required
+            >
+              <option value="">Seleccionar Ciclo</option>
+              {Array.isArray(ciclos) && ciclos.map((ciclo) => (
+                <option key={ciclo.ciclo_id} value={ciclo.ciclo_id}>
+                  Ciclo {ciclo.numero_ciclo}
+                </option>
+              ))}
+            </select>
+            {formErrors.ciclo_id && (
+              <p className="text-red-500 text-sm mt-1">{formErrors.ciclo_id}</p>
+            )}
+          </div>
+
           <div>
             <input
               type="date"
@@ -289,6 +343,7 @@ const RegisterForm = () => {
               <p className="text-red-500 text-sm mt-1">{formErrors.fechaNacimiento}</p>
             )}
           </div>
+
           <input
             type="text"
             name="direccion"
@@ -300,7 +355,7 @@ const RegisterForm = () => {
         </>
       )}
 
-      {/* Campos específicos de profesor */}
+      {/* Teacher-specific Fields */}
       {formData.userType === 'teacher' && (
         <div>
           <input
@@ -308,24 +363,14 @@ const RegisterForm = () => {
             name="especialidad"
             value={formData.especialidad}
             onChange={handleInputChange}
-            placeholder="Especialidad"
+            placeholder="Especialidad (opcional)"
             className={`w-full p-2 border rounded ${formErrors.especialidad ? 'border-red-500' : ''}`}
-            required
           />
           {formErrors.especialidad && (
             <p className="text-red-500 text-sm mt-1">{formErrors.especialidad}</p>
           )}
         </div>
       )}
-
-      <input
-        type="text"
-        name="telefono"
-        value={formData.telefono}
-        onChange={handleInputChange}
-        placeholder="Teléfono"
-        className="w-full p-2 border rounded"
-      />
 
       <button
         type="submit"

@@ -7,6 +7,7 @@ const {
 } = require('../controllers/EstudianteControllers'); // Asegúrate de que la ruta al controlador sea correcta
 
 const estudianterouter = express.Router();
+const { Estudiante, Matricula } = require('../models');
 
 // Crear un nuevo estudiante
 estudianterouter.post('/', async (req, res) => {
@@ -57,5 +58,29 @@ estudianterouter.delete('/:id', async (req, res) => {
         res.status(400).json({ error: error.message }); // Manejo de errores
     }
 });
+
+estudianterouter.get('/ciclo/:cicloId', async (req, res) => {
+    try {
+        const cicloId = req.params.cicloId;
+        
+        // Consulta para obtener estudiantes por ciclo
+        const estudiantesPorCiclo = await Estudiante.findAll({
+            where: { ciclo_id: cicloId },
+            include: [{
+                model: Matricula,
+                as: 'matriculas', // Usa el alias correcto
+                attributes: [] // No necesitamos atributos de Matricula
+            }],
+            attributes: ['estudiante_id', 'nombres'], // Solo queremos id y nombre de Estudiante
+            raw: true // Esto devuelve objetos planos en lugar de instancias de modelo
+        });
+        
+        res.status(200).json(estudiantesPorCiclo);
+    } catch (error) {
+        console.error('Error getting students by ciclo:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
 
 module.exports = estudianterouter;

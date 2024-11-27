@@ -3,7 +3,8 @@ const {
     createCursoController,
     getAllCursosController,
     updatedCursoByIdController,
-    deleteCursoByIdController
+    deleteCursoByIdController,
+    getCursosByCicloController
 } = require('../controllers/CursoControllers'); // Asegúrate de que la ruta sea correcta
 
 const router = express.Router();
@@ -56,5 +57,8 @@ router.delete('/:curso_id', async (req, res) => {
         res.status(400).json({ message: error.message }); // Manejo de errores
     }
 });
+
+// Ruta para obtener cursos por ciclo
+router.get('/ciclo/:ciclo_id', getCursosByCicloController);
 
 module.exports = router;

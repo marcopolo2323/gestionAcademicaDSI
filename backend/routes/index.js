@@ -22,7 +22,7 @@ router.use('/asistencia', require('./AsistenciaRoutes'));
 router.use('/calificacion', require('./CalificacionRoutes'));
 router.use('/carrera', require('./CarreraRoutes'));
 router.use('/curso', require('./CursoRoutes'));
-router.use('/estudiante', require('./EstudianteRoutes'));
+router.use('/estudiante', require('./estudianteRoutes'));
 router.use('/matricula', require('./MatriculaRoutes'));
 router.use('/planestudio', require('./PlanestudioRoutes'));
 router.use('/profesor', require('./ProfesorRoutes'));
