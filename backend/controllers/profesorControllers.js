@@ -1,9 +1,12 @@
 const Profesor = require('../models/Profesor'); // Asegúrate de que el modelo de Profesor esté definido correctamente
 
 // Crea un nuevo profesor
-const createProfesorController = async ({ profesor_id,usuario_id,dni, nombres, apellidos, especialidad, telefono, email,estado,fecha_registro }) => {
+const createProfesorController = async (profesorData) => {
     try {
-        const newProfesor = await Profesor.create({ profesor_id,usuario_id,ciclo_id, dni, nombres, apellidos, especialidad, telefono, email,estado,fecha_registro });
+        // Remove ciclo_id from the data
+        const { ciclo_id, ...dataToCreate } = profesorData;
+        
+        const newProfesor = await Profesor.create(dataToCreate);
         return newProfesor;
     } catch (error) {
         throw new Error(error.message);

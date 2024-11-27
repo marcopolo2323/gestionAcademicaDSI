@@ -103,19 +103,24 @@ const MatriculaManagement = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
+    // Ensure all required fields are numbers
+    const matriculaData = {
+      estudiante_id: parseInt(formData.estudiante_id, 10),
+      curso_id: parseInt(formData.curso_id, 10),
+      ciclo_id: parseInt(selectedCiclo, 10),
+      estado: formData.estado || 'MATRICULADO'
+    };
+  
+    console.log('Prepared Matricula Data:', matriculaData);
+  
     try {
-      const matriculaData = {
-        ...formData,
-        ciclo_id: selectedCiclo
-      };
-
       if (isEditing && editId) {
         await updateMatricula(editId, matriculaData);
       } else {
         await createMatricula(matriculaData);
       }
       
-      // Limpiar formulario
+      // Reset form and state
       setFormData({
         estudiante_id: '',
         curso_id: '',
@@ -125,10 +130,15 @@ const MatriculaManagement = () => {
       setEditId(null);
       setSelectedCiclo('');
       
-      // Recargar datos
-      await fetchMatriculas();
     } catch (error) {
-      console.error('Error saving matricula:', error);
+      console.error('Comprehensive Error in Matricula Submission:', {
+        error: error.response?.data,
+        status: error.response?.status,
+        message: error.message
+      });
+      
+      // Optionally, show a user-friendly error message
+      alert(`Error creating matricula: ${error.response?.data?.message || error.message}`);
     }
   };
 
