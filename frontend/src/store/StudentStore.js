@@ -5,9 +5,16 @@ const useStudentStore = create((set) => ({
   students: [],
 
   fetchStudents: async () => {
-    await handleRequest(() => api.get('/estudiante'), (data) =>
-      set({ students: data })
-    );
+    try {
+      const response = await api.get('/estudiante');
+      console.log('Students fetched:', response.data);
+      set({ students: response.data });
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching students:', error);
+      set({ students: [] });
+      return [];
+    }
   },
 
   addStudent: async (student) => {

@@ -102,16 +102,26 @@ const MatriculaManagement = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    // Ensure all required fields are numbers
+    console.log('Cursos en Ciclo:', cursosEnCiclo);
+console.log('Form Data curso_id:', formData.curso_id);
+console.log('Selected Ciclo:', selectedCiclo);
+    // Validate course selection more robustly
+    const courseToUse = formData.curso_id || 
+      (cursosEnCiclo.length > 0 ? cursosEnCiclo[0].id : null);
+  
+    // Ensure courseToUse is a valid number
+    if (!courseToUse || isNaN(parseInt(courseToUse, 10))) {
+      alert('Por favor seleccione un curso válido');
+      return;
+    }
+  
     const matriculaData = {
       estudiante_id: parseInt(formData.estudiante_id, 10),
       curso_id: parseInt(formData.curso_id, 10),
       ciclo_id: parseInt(selectedCiclo, 10),
       estado: formData.estado || 'MATRICULADO'
     };
-  
-    console.log('Prepared Matricula Data:', matriculaData);
+    console.log('Final Matricula Data:', matriculaData);
   
     try {
       if (isEditing && editId) {
@@ -131,13 +141,6 @@ const MatriculaManagement = () => {
       setSelectedCiclo('');
       
     } catch (error) {
-      console.error('Comprehensive Error in Matricula Submission:', {
-        error: error.response?.data,
-        status: error.response?.status,
-        message: error.message
-      });
-      
-      // Optionally, show a user-friendly error message
       alert(`Error creating matricula: ${error.response?.data?.message || error.message}`);
     }
   };
@@ -239,18 +242,21 @@ const MatriculaManagement = () => {
             <label>
               Curso:
               <select
-                value={formData.curso_id}
-                onChange={(e) => setFormData({...formData, curso_id: e.target.value})}
-                required
-                disabled={!selectedCiclo}
-              >
-                <option value="">Seleccionar Curso</option>
-                {cursosEnCiclo.map(curso => (
-                  <option key={curso.id} value={curso.id}>
-                    {curso.nombre}
-                  </option>
-                ))}
-              </select>
+              value={formData.curso_id}
+              onChange={(e) => {
+                console.log('Selected Course ID:', e.target.value);
+                setFormData({...formData, curso_id: e.target.value})
+              }}
+              required
+              disabled={!selectedCiclo || !formData.estudiante_id}
+            >
+              <option value="">Seleccionar Curso</option>
+              {cursosEnCiclo.map(curso => (
+                <option key={curso.curso_id} value={curso.curso_id}>
+                  {curso.nombre}
+                </option>
+              ))}
+            </select>
             </label>
           </div>
 

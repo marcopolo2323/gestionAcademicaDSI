@@ -5,18 +5,18 @@ import { useNavigate } from 'react-router-dom';
 
 import Home from './../pages/home/Home';
 import LoginPage from './../pages/loginPage/LoginPage';
-import RegisterPage from './../pages/registerPage/RegisterPage';
-import Dashboard from './../pages/dashboard/DashBoard';
 import StudentPage from './../pages/studentPage/StudentPage';
 import TeacherDashboard from './../components/teacherDashboard/TeacherDashboard';
 import useStore from '../store/useStore';
 import CarreraForm from '../components/Registros/carreraForm/CarreraForm';
 import AsistenciaForm from '../components/Registros/asistenciaForm/AsistenciaForm';
-import CalificacionForm from '../components/Registros/calificacionForm/CalificacionForm';
+// import CalificacionForm from '../components/Registros/calificacionForm/CalificacionForm';
 import CursoForm from '../components/Registros/cursosForm/CursosForm';
 import PlanEstudioForm from '../components/Registros/planDeEstudioForm/PlanEstudioForm';
 import MatriculaManagement from '../components/Registros/matriculaForm/MatriculaForm';
 import HorarioForm from '../components/Registros/horarioForm/HorarioForm';
+import AdminPage from '../pages/adminPage/AdminPage';
+import RegisterForm from '../components/Registros/registerForm/RegisterForm';
 
 const PrivateRoute = ({ children, role }) => {
   const { user, logout } = useStore();
@@ -33,13 +33,9 @@ const PrivateRoute = ({ children, role }) => {
     return <Navigate to="/login" replace />;
   }
 
-  // Flexible role validation
-  if (role) {
-    const normalizedRole = `ROLE_${role.toUpperCase()}`;
-    if (user.role !== normalizedRole) {
-      // Puedes personalizar esto para mostrar un mensaje de error o redirigir
-      return <Navigate to="/" replace />;
-    }
+  // Validación de roles
+  if (role && user.role !== `ROLE_${role.toUpperCase()}`) {
+    return <Navigate to="/" replace />;
   }
 
   return children;
@@ -47,47 +43,79 @@ const PrivateRoute = ({ children, role }) => {
 
 PrivateRoute.propTypes = {
   children: PropTypes.node.isRequired,
-  role: PropTypes.string
+  role: PropTypes.string,
 };
 
 const AppRouter = () => {
   return (
     <Routes>
       <Route path="/" element={<Home />} />
-      <Route path='/carrera' element={<CarreraForm/>}/>
-      <Route path='/plan-estudios' element={<PlanEstudioForm/>}/>
-      <Route path="/register" element={<RegisterPage />} />
-      <Route path='/cursos' element={<CursoForm/>}/>
-      <Route path='/matricula' element={<MatriculaManagement/>}/>
-      <Route path='/horario' element={<HorarioForm/>}/>
-      <Route path='/calificaciones' element={<CalificacionForm/>}/>
-      <Route path='/asistencia' element={<AsistenciaForm/>}/>
-      <Route path="/login" element={<LoginPage />} />
+      
+      {/* Rutas para Admin */}
       <Route 
-        path="/dashboard" 
-        element={
-          <PrivateRoute> 
-            <Dashboard />
+        path='/carrera' 
+        element={ 
+          <PrivateRoute role="ADMIN">
+            <CarreraForm />
           </PrivateRoute>
         } 
       />
       <Route 
-        path="/student" 
+        path='/plan-estudios' 
         element={
-          <PrivateRoute role="STUDENT">
-            <StudentPage />
+          <PrivateRoute role="ADMIN">
+            <PlanEstudioForm />
           </PrivateRoute>
-        } 
+        }
       />
       <Route 
-        path="/teacher-dashboard" 
+        path='/cursos' 
+        element={
+          <PrivateRoute role="ADMIN">
+            <CursoForm />
+          </PrivateRoute>
+        }
+      />
+      <Route 
+        path='/matricula' 
+        element={
+          <PrivateRoute role="ADMIN">
+            <MatriculaManagement />
+          </PrivateRoute>
+        }
+      />
+      <Route 
+        path='/horario' 
+        element={
+          <PrivateRoute role="ADMIN">
+            <HorarioForm />
+          </PrivateRoute>
+        }
+      />
+      <Route 
+        path='/register' 
+        element={
+          <PrivateRoute role="ADMIN">
+            <RegisterForm />
+          </PrivateRoute>
+        }
+      />
+
+      {/* Rutas para el profesor */}
+      <Route 
+        path='/asistencia' 
         element={
           <PrivateRoute role="TEACHER">
-            <TeacherDashboard />
+            <AsistenciaForm />
           </PrivateRoute>
-        } 
+        }
       />
-      {/* Opcional: Ruta de página no encontrada */}
+
+      {/* Otras rutas */}
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/student" element={<PrivateRoute role="STUDENT"><StudentPage /></PrivateRoute>} />
+      <Route path="/teacher-dashboard" element={<PrivateRoute role="TEACHER"><TeacherDashboard /></PrivateRoute>} />
+      <Route path="/admin" element={<PrivateRoute role="ADMIN"><AdminPage /></PrivateRoute>} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );

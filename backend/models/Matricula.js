@@ -3,7 +3,7 @@ const sequelize = require('../db');
 
 const Matricula = sequelize.define('Matricula', {
     matricula_id: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.INTEGER, 
         primaryKey: true,
         autoIncrement: true
     }, 

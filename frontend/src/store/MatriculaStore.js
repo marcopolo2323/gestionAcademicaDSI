@@ -17,7 +17,7 @@ const useMatriculaStore = create((set) => ({
         error: error.response?.data?.message || error.message, 
         loading: false, 
         matriculas: [] 
-      })
+      }) 
     }
   },
 

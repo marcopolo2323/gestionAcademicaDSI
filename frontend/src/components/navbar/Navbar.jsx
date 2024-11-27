@@ -1,16 +1,23 @@
-// src/components/Navbar/Navbar.jsx
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { NavbarActions } from './NavbarActions';
+import styles from './Navbar.module.css'; // Importar los estilos
 
 const Navbar = () => {
+  const location = useLocation(); // Obtener la ubicación actual de la página
+
   return (
-    <nav className="bg-gray-800 text-white py-4">
-      <div className="container mx-auto flex justify-between items-center">
+    <nav className={styles.navbar}>
+      <div className={styles.navbarContainer}>
         <div>
-          <Link to="/" className="text-lg font-bold">
-            Home
-          </Link>
+          {/* Renderizamos el enlace de Home solo si no estamos ya en la página Home */}
+          {location.pathname !== '/' && (
+            <Link to="/" className={styles.navbarLink}>
+              Home
+            </Link>
+          )}
         </div>
+
+        {/* Renderizamos NavbarActions siempre */}
         <NavbarActions />
       </div>
     </nav>

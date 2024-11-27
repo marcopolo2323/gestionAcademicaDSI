@@ -6,11 +6,11 @@ const Calificacion = sequelize.define('Calificacion', {
     calificacion_id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
-        autoIncrement: true
+        autoIncrement: true 
     },
     matricula_id: {
         type: DataTypes.INTEGER,
-        allowNull: false,
+        allowNull: false, 
         references: {
             model: 'MATRICULAS',
             key: 'matricula_id'

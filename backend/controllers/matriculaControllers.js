@@ -1,12 +1,13 @@
 const Matricula = require('../models/Matricula'); // Asegúrate de que el modelo de Matricula esté definido correctamente
 
 // Crea una nueva matrícula
-const createMatriculaController = async ({ matricula_id, estudiante_id, curso_id, fecha_matricula,estado }) => {
+const createMatriculaController = async ({ matricula_id, estudiante_id, curso_id,ciclo_id, fecha_matricula,estado }) => {
     try {
         const newMatricula = await Matricula.create({ 
             matricula_id,
             estudiante_id, 
             curso_id, 
+            ciclo_id,
             fecha_matricula, 
             estado 
         });

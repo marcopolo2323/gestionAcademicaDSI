@@ -1,11 +1,11 @@
-// LoginForm.jsx
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useStore from '../../../store/useStore';
+import styles from './LoginForm.module.css';
 
 const LoginForm = () => {
   const [formData, setFormData] = useState({
-    username: '',
+    username: '', 
     password: ''
   });
   const [isLoading, setIsLoading] = useState(false);
@@ -81,11 +81,11 @@ const LoginForm = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="w-full max-w-md">
-        <form onSubmit={handleLogin} className="bg-white shadow-md rounded-lg px-8 pt-6 pb-8 mb-4">
+    <div className={styles.formContainer}>
+      <div className={styles.formWrapper}>
+        <form onSubmit={handleLogin} className={styles.form}>
           <div className="mb-4">
-            <label htmlFor="username" className="block text-gray-700 text-sm font-bold mb-2">
+            <label htmlFor="username" className={styles.inputLabel}>
               Usuario
             </label>
             <input
@@ -95,18 +95,16 @@ const LoginForm = () => {
               value={formData.username}
               onChange={handleInputChange}
               placeholder="Ingrese su usuario"
-              className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                validationErrors.username ? 'border-red-500' : ''
-              }`}
+              className={`${styles.inputField} ${validationErrors.username ? 'border-red-500' : ''}`}
               autoComplete="username"
             />
             {validationErrors.username && (
-              <p className="text-red-500 text-xs italic mt-1">{validationErrors.username}</p>
+              <p className={styles.errorMessage}>{validationErrors.username}</p>
             )}
           </div>
 
           <div className="mb-6">
-            <label htmlFor="password" className="block text-gray-700 text-sm font-bold mb-2">
+            <label htmlFor="password" className={styles.inputLabel}>
               Contraseña
             </label>
             <input
@@ -116,20 +114,18 @@ const LoginForm = () => {
               value={formData.password}
               onChange={handleInputChange}
               placeholder="Ingrese su contraseña"
-              className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                validationErrors.password ? 'border-red-500' : ''
-              }`}
+              className={`${styles.inputField} ${validationErrors.password ? 'border-red-500' : ''}`}
               autoComplete="current-password"
             />
             {validationErrors.password && (
-              <p className="text-red-500 text-xs italic mt-1">{validationErrors.password}</p>
+              <p className={styles.errorMessage}>{validationErrors.password}</p>
             )}
           </div>
 
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition-colors duration-300 disabled:bg-blue-300"
+            className={styles.submitButton}
           >
             {isLoading ? (
               <div className="flex items-center justify-center">
@@ -156,15 +152,13 @@ const LoginForm = () => {
           </button>
 
           {error && (
-            <div className="mt-4 p-3 bg-red-50 border-l-4 border-red-500 text-red-700">
+            <div className={styles.errorContainer}>
               <p>{error}</p>
             </div>
           )}
 
-          <div className="mt-4 text-center">
-            <a href="/forgot-password" className="text-sm text-blue-500 hover:text-blue-700">
-              ¿Olvidaste tu contraseña?
-            </a>
+          <div className={styles.forgotPasswordLink}>
+            <a href="/forgot-password">¿Olvidaste tu contraseña?</a>
           </div>
         </form>
       </div>

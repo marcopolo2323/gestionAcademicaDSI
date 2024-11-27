@@ -10,13 +10,13 @@ const useStore = create(
       token: null,
       roles: {},
       
-      updateRoleRoutes: (roleRoutes) => {
+      updateRoleRoutes: (roleRoutes) => { 
         set({ roles: roleRoutes });
       },
 
       getRouteByRole: (role) => {
         const defaultRoutes = {
-          'ROLE_ADMIN': '/admin-dashboard',
+          'ROLE_ADMIN': '/admin',
           'ROLE_TEACHER': '/teacher-dashboard',
           'ROLE_STUDENT': '/student'
         };

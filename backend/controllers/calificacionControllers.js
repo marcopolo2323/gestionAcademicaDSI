@@ -1,11 +1,11 @@
 const Calificacion = require('../models/Calificacion'); // Asegúrate de que el modelo de Calificacion esté definido correctamente
 
 // Crea una nueva calificación
-const createCalificacionController = async ({calificacion_id, matricula_id, tipo_evaluacion, nota, fecha, observacion }) => {
+const createCalificacionController = async ({calificacion_id, matricula_id, tipo_evaluacion, nota, fecha, observacion,estado }) => {
     try {
-        const newCalificacion = await Calificacion.create({calificacion_id, matricula_id, tipo_evaluacion, nota, fecha, observacion });
+        const newCalificacion = await Calificacion.create({calificacion_id, matricula_id, tipo_evaluacion, nota, fecha, observacion,estado });
         return newCalificacion;
-    } catch (error) {
+    } catch (error) { 
         throw new Error(error.message);
     }
 };
