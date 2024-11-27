@@ -2,6 +2,7 @@ import { useState } from 'react';
 import useStudentStore from './../../store/StudentStore';
 import useTeacherStore from './../../store/TeacherStore';
 import useUsuarioStore from './../../store/UsuarioStore'; // Cambiado a tu store existente
+import './register.css'
 
 const RegisterForm = () => {
   const [username, setUsername] = useState('');
@@ -198,6 +199,7 @@ const RegisterForm = () => {
 
       <button
         type="submit"
+        style={{backgroundColor: 'dodgerblue'}}
         disabled={isLoading}
         className="w-full p-2 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:bg-blue-300"
       >
