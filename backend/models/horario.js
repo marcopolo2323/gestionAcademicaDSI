@@ -8,7 +8,7 @@ const Horario = sequelize.define('Horario', {
         primaryKey: true,
         autoIncrement: true
       },
-      dia: {
+      dia: { 
         type: DataTypes.ENUM('Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'),
         allowNull: false
       },

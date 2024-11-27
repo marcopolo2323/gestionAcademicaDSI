@@ -1,7 +1,7 @@
 const Profesor = require('../models/Profesor'); // Asegúrate de que el modelo de Profesor esté definido correctamente
 
 // Crea un nuevo profesor
-const createProfesorController = async ({ profesor_id,usuario_id,ciclo_id, dni, nombres, apellidos, especialidad, telefono, email,estado,fecha_registro }) => {
+const createProfesorController = async ({ profesor_id,usuario_id,dni, nombres, apellidos, especialidad, telefono, email,estado,fecha_registro }) => {
     try {
         const newProfesor = await Profesor.create({ profesor_id,usuario_id,ciclo_id, dni, nombres, apellidos, especialidad, telefono, email,estado,fecha_registro });
         return newProfesor;
@@ -9,12 +9,22 @@ const createProfesorController = async ({ profesor_id,usuario_id,ciclo_id, dni, 
         throw new Error(error.message);
     }
 };
-
+ 
 // Obtener todos los profesores
 const getAllProfesoresController = async () => {
     try {
-        const profesores = await Profesor.findAll(); // Obtiene todos los profesores
-        return profesores;
+        const profesores = await Profesor.findAll();
+        
+        // Mapear los resultados para que coincidan con el frontend
+        return profesores.map(profesor => ({
+            profesor_id: profesor.profesor_id,
+            nombre: profesor.nombres,     // Mapear 'nombres' a 'nombre'
+            apellido: profesor.apellidos, // Mapear 'apellidos' a 'apellido'
+            dni: profesor.dni,
+            especialidad: profesor.especialidad,
+            email: profesor.email,
+            estado: profesor.estado
+        }));
     } catch (error) {
         throw new Error(error.message);
     }

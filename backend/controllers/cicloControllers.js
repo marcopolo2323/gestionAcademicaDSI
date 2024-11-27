@@ -7,14 +7,20 @@ const createCicloController = async ({ ciclo_id,numero_ciclo,estado,fecha_regist
         return newCiclo;
     } catch (error) {
         throw new Error(error.message);
-    }
+    } 
 };
 
 // Obtener todos los Ciclos
 const getAllCiclosController = async () => {
     try {
-        const Ciclos = await Ciclo.findAll(); // Obtiene todos los Ciclos
-        return Ciclos;
+        const ciclos = await Ciclo.findAll();
+        
+        // Mapear los resultados para que coincidan con el frontend
+        return ciclos.map(ciclo => ({
+            ciclo_id: ciclo.ciclo_id,
+            nombre: ciclo.numero_ciclo, // Mapear 'numero_ciclo' a 'nombre'
+            estado: ciclo.estado
+        }));
     } catch (error) {
         throw new Error(error.message);
     }

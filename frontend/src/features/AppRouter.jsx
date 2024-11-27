@@ -14,11 +14,9 @@ import CarreraForm from '../components/Registros/carreraForm/CarreraForm';
 import AsistenciaForm from '../components/Registros/asistenciaForm/AsistenciaForm';
 import CalificacionForm from '../components/Registros/calificacionForm/CalificacionForm';
 import CursoForm from '../components/Registros/cursosForm/CursosForm';
-import RegistroHorario from '../components/Registros/horarioForm/Horario';
 import PlanEstudioForm from '../components/Registros/planDeEstudioForm/PlanEstudioForm';
 import MatriculaManagement from '../components/Registros/matriculaForm/MatriculaForm';
-import PlanEstudioList from '../components/Listas/plandeEstuioList/PlanestudioList';
-import CarreraList from '../components/Listas/CarreraList/carreraList';
+import HorarioForm from '../components/Registros/horarioForm/HorarioForm';
 
 const PrivateRoute = ({ children, role }) => {
   const { user, logout } = useStore();
@@ -61,12 +59,9 @@ const AppRouter = () => {
       <Route path="/register" element={<RegisterPage />} />
       <Route path='/cursos' element={<CursoForm/>}/>
       <Route path='/matricula' element={<MatriculaManagement/>}/>
-      <Route path='/horario' element={<RegistroHorario/>}/>
+      <Route path='/horario' element={<HorarioForm/>}/>
       <Route path='/calificaciones' element={<CalificacionForm/>}/>
       <Route path='/asistencia' element={<AsistenciaForm/>}/>
-      <Route path='/planestudiolist' element={<PlanEstudioList/>}/>
-      <Route path='/carreraList' element={<CarreraList/>}/>
-
       <Route path="/login" element={<LoginPage />} />
       <Route 
         path="/dashboard" 
