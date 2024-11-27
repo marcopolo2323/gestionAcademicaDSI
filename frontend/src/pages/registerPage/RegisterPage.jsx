@@ -1,9 +1,10 @@
 import RegisterForm from '../../components/registerForm/RegisterForm';
+import './page.css'
 
 const RegisterPage = () => {
   return (
-    <div>
-      <h1>Registro</h1>
+    <div className='pagee'>
+      <h1 style={{textAlign: 'center'}}>Registro</h1>
       <RegisterForm />
     </div>
   );

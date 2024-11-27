@@ -1,0 +1,25 @@
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    max-width: 400px;
+    width: 100%;
+}
+form div {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+form div input {
+    padding: 8px; 
+    outline: none;
+    background-color: rgb(63, 62, 62);
+    color: white;
+    font-size: 18px;
+    border-radius: 7px;
+}
+form div button {
+    background: dodgerblue;
+    color: white;
+}
