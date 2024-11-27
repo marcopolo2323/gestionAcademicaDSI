@@ -1,14 +1,29 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import useCursoStore from '../../../store/CursoStore';
+import usePlanStore from '../../../store/planEstudioStore';
+import useTeacherStore from '../../../store/TeacherStore'; // Corrected import
+import useHorarioStore from '../../../store/HorarioStore';
 
 const CursoForm = () => {
   const addCurso = useCursoStore((state) => state.addCurso);
+  const fetchPlanes = usePlanStore((state) => state.fetchPlanes);
+  const planes = usePlanStore((state) => state.planes || []);
+  
+  // Changed from fetchProfesores to fetchTeachers
+  const fetchTeachers = useTeacherStore((state) => state.fetchTeachers);
+  
+  // Changed from profesores to teachers
+  const teachers = useTeacherStore((state) => state.teachers || []);
+  
+  const fetchHorarios = useHorarioStore((state) => state.fetchHorarios);
+  const horarios = useHorarioStore((state) => state.horarios || []);
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   
   const [formData, setFormData] = useState({
     plan_id: '',
-    profesor_id: '',
+    profesor_id: '', // Changed to match teacher store
     horario_id: '',
     nombre: '',
     codigo: '',
@@ -18,6 +33,22 @@ const CursoForm = () => {
     aula: '',
     estado: 'ACTIVO'
   });
+
+  // Fetch related data on component mount
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        await fetchPlanes();
+        await fetchTeachers(); // Changed method name
+        await fetchHorarios();
+      } catch (err) {
+        console.error('Error fetching initial data:', err);
+        setError('No se pudieron cargar los datos iniciales');
+      }
+    };
+
+    loadData();
+  }, [fetchPlanes, fetchTeachers, fetchHorarios]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -68,134 +99,129 @@ const CursoForm = () => {
   };
 
   return (
-    <div className="max-w-2xl mx-auto p-4">
-      <h2 className="text-2xl font-bold mb-4">Registrar Curso</h2>
-      
-      {error && (
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-          {error}
-        </div>
-      )}
+    <form onSubmit={handleSubmit}>
+      <div>
+        <label>Plan de Estudios:</label>
+        <select
+          name="plan_id"
+          value={formData.plan_id}
+          onChange={handleChange}
+          required
+        > 
+          <option value="">Seleccione un Plan</option>
+          {planes.map((plan) => (
+            <option key={plan.id} value={plan.id}>
+              {plan.nombre}
+            </option>
+          ))}
+        </select>
+      </div>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label className="block mb-1">Plan de Estudios ID:</label>
-          <input
-            type="number"
-            name="plan_id"
-            value={formData.plan_id}
-            onChange={handleChange}
-            required
-            className="w-full p-2 border rounded"
-          />
-        </div>
-
-        <div>
-          <label className="block mb-1">Profesor ID:</label>
-          <input
-            type="number"
-            name="profesor_id"
-            value={formData.profesor_id}
-            onChange={handleChange}
-            required
-            className="w-full p-2 border rounded"
-          />
-        </div>
-
-        <div>
-          <label className="block mb-1">Horario ID:</label>
-          <input
-            type="number"
-            name="horario_id"
-            value={formData.horario_id}
-            onChange={handleChange}
-            required
-            className="w-full p-2 border rounded"
-          />
-        </div>
-
-        <div>
-          <label className="block mb-1">Nombre:</label>
-          <input
-            type="text"
-            name="nombre"
-            value={formData.nombre}
-            onChange={handleChange}
-            required
-            className="w-full p-2 border rounded"
-          />
-        </div>
-
-        <div>
-          <label className="block mb-1">Código:</label>
-          <input
-            type="text"
-            name="codigo"
-            value={formData.codigo}
-            onChange={handleChange}
-            required
-            className="w-full p-2 border rounded"
-          />
-        </div>
-
-        <div>
-          <label className="block mb-1">Periodo Académico:</label>
-          <input
-            type="text"
-            name="periodo_academico"
-            value={formData.periodo_academico}
-            onChange={handleChange}
-            required
-            className="w-full p-2 border rounded"
-          />
-        </div>
-
-        <div>
-          <label className="block mb-1">Paralelo:</label>
-          <input
-            type="text"
-            name="paralelo"
-            value={formData.paralelo}
-            onChange={handleChange}
-            required
-            className="w-full p-2 border rounded"
-          />
-        </div>
-
-        <div>
-          <label className="block mb-1">Cupo Máximo:</label>
-          <input
-            type="number"
-            name="cupo_maximo"
-            value={formData.cupo_maximo}
-            onChange={handleChange}
-            required
-            className="w-full p-2 border rounded"
-          />
-        </div>
-
-        <div>
-          <label className="block mb-1">Aula:</label>
-          <input
-            type="text"
-            name="aula"
-            value={formData.aula}
-            onChange={handleChange}
-            className="w-full p-2 border rounded"
-          />
-        </div>
-
-        <button 
-          type="submit" 
-          disabled={loading}
-          className={`w-full p-2 rounded text-white ${
-            loading ? 'bg-gray-400' : 'bg-blue-500 hover:bg-blue-600'
-          }`}
+      <div>
+        <label>Profesor:</label>
+        <select
+          name="profesor_id"
+          value={formData.profesor_id}
+          onChange={handleChange}
+          required
         >
-          {loading ? 'Guardando...' : 'Registrar Curso'}
-        </button>
-      </form>
-    </div>
+          <option value="">Seleccione un Profesor</option>
+          {teachers.map((teacher) => (
+            <option key={teacher.profesor_id} value={teacher.profesor_id}>
+              {teacher.nombre} {teacher.apellido}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <div>
+        <label>Horario:</label>
+        <select
+          name="horario_id"
+          value={formData.horario_id}
+          onChange={handleChange}
+          required
+        >
+          <option value="">Seleccione un Horario</option>
+          {horarios.map((horario) => (
+            <option key={horario.id} value={horario.id}>
+              {horario.dia} {horario.hora_inicio} - {horario.hora_fin}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <div>
+        <label>Nombre:</label>
+        <input
+          type="text"
+          name="nombre"
+          value={formData.nombre}
+          onChange={handleChange}
+          required
+        />
+      </div>
+
+      <div>
+        <label>Código:</label>
+        <input
+          type="text"
+          name="codigo"
+          value={formData.codigo}
+          onChange={handleChange}
+          required
+        />
+      </div>
+
+      <div>
+        <label>Periodo Académico:</label>
+        <input
+          type="text"
+          name="periodo_academico"
+          value={formData.periodo_academico}
+          onChange={handleChange}
+          required
+        />
+      </div>
+
+      <div>
+        <label>Paralelo:</label>
+        <input
+          type="text"
+          name="paralelo"
+          value={formData.paralelo}
+          onChange={handleChange}
+          required
+        />
+      </div>
+
+      <div>
+        <label>Cupo Máximo:</label>
+        <input
+          type="number"
+          name="cupo_maximo"
+          value={formData.cupo_maximo}
+          onChange={handleChange}
+          required
+        />
+      </div>
+
+      <div>
+        <label>Aula:</label>
+        <input
+          type="text"
+          name="aula"
+          value={formData.aula}
+          onChange={handleChange}
+        />
+      </div>
+
+      {error && <div style={{color: 'red'}}>{error}</div>}
+
+      <button type="submit" disabled={loading}>
+        {loading ? 'Guardando...' : 'Registrar Curso'}
+      </button>
+    </form>
   );
 };
 

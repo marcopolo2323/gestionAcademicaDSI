@@ -1,4 +1,3 @@
-// Matricula.js
 const { DataTypes } = require('sequelize');
 const sequelize = require('../db');
 
@@ -7,20 +6,20 @@ const Matricula = sequelize.define('Matricula', {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
-    },
+    }, 
     estudiante_id: {
         type: DataTypes.INTEGER,
-        allowNull: false,
+        allowNull: false, 
         references: {
-            model: 'ESTUDIANTES',
+            model: 'ESTUDIANTES', // Nombre de la tabla de estudiantes
             key: 'estudiante_id'
         }
-    },
+    }, 
     curso_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-            model: 'CURSOS',
+            model: 'CURSOS', // Nombre de la tabla de cursos
             key: 'curso_id'
         }
     },
@@ -28,24 +27,16 @@ const Matricula = sequelize.define('Matricula', {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-            model: 'CICLOS',
+            model: 'CICLOS', // Nombre de la tabla de ciclos
             key: 'ciclo_id'
         }
-    },    
+    },
     fecha_matricula: {
         type: DataTypes.DATE,
         allowNull: false,
         defaultValue: DataTypes.NOW,
         validate: {
             isDate: true
-        }
-    },
-    nota_final: {
-        type: DataTypes.DECIMAL(5, 2),
-        allowNull: true,
-        validate: {
-            min: 0.0,
-            max: 20.0
         }
     },
     estado: {
@@ -60,7 +51,8 @@ const Matricula = sequelize.define('Matricula', {
     timestamps: false,
     indexes: [
         { fields: ['estudiante_id'] },
-        { fields: ['curso_id'] }
+        { fields: ['curso_id'] },
+        { fields: ['ciclo_id'] }
     ]
 });
 

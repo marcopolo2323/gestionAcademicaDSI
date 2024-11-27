@@ -6,7 +6,7 @@ const Curso = sequelize.define('Curso', {
     curso_id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
-        autoIncrement: true
+        autoIncrement: true 
     },
     plan_id: {
         type: DataTypes.INTEGER,
@@ -73,7 +73,7 @@ const Curso = sequelize.define('Curso', {
     },
     estado: {
         type: DataTypes.STRING(20),
-        defaultValue: 'ACTIVO',
+        defaultValue: 'ACTIVO', 
         validate: {
             isIn: [['ACTIVO', 'INACTIVO', 'FINALIZADO']]
         }

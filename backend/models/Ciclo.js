@@ -8,14 +8,13 @@ const Ciclo = sequelize.define('Ciclo', {
         autoIncrement: true
     },
     numero_ciclo: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.STRING(5),
         unique: true,
         allowNull: false,
         validate: {
-            min: 1, 
-            max: 6
+            isIn: [['I', 'II', 'III', 'IV', 'V', 'VI']]
         }
-    },
+    },    
     estado: {
         type: DataTypes.STRING(20),
         defaultValue: 'ACTIVO',

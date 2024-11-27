@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { api } from '../utils/api';
 
 const useCicloStore = create((set) => ({
-  Ciclos: [],
+  ciclos: [],
   isLoading: false,
   error: null,
 
@@ -12,7 +12,7 @@ const useCicloStore = create((set) => ({
       const response = await api.get('/ciclo');
       console.log('Respuesta de ciclos:', response.data);
       set({ 
-        Ciclos: response.data,
+        ciclos: response.data,
         isLoading: false 
       });
     } catch (error) {
@@ -30,7 +30,7 @@ const useCicloStore = create((set) => ({
     try {
       const response = await api.post('/ciclo', Ciclo);
       set((state) => ({
-        Ciclos: [...state.Ciclos, response.data],
+        ciclos: [...state.ciclos, response.data],
         isLoading: false
       }));
       return response.data;
@@ -48,7 +48,7 @@ const useCicloStore = create((set) => ({
     try {
       const response = await api.put(`/ciclo/${id}`, updateData);
       set((state) => ({
-        Ciclos: state.Ciclos.map((Ciclo) =>
+        ciclos: state.ciclos.map((Ciclo) =>
           Ciclo.ciclo_id === id ? response.data : Ciclo
         ),
         isLoading: false
@@ -68,7 +68,7 @@ const useCicloStore = create((set) => ({
     try {
       await api.delete(`/ciclo/${id}`);
       set((state) => ({
-        Ciclos: state.Ciclos.filter((Ciclo) => Ciclo.ciclo_id !== id),
+        ciclos: state.ciclos.filter((Ciclo) => Ciclo.ciclo_id !== id),
         isLoading: false
       }));
     } catch (error) {

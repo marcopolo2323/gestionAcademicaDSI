@@ -1,0 +1,89 @@
+.edit-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+}
+
+.modal-content {
+    background-color: rgb(65, 7, 172);
+    box-shadow: 0 0 3px aqua;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    box-sizing: border-box;
+    max-width: 800px;
+    width: 100%;
+    font-family: 'poppins';
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+.edit-modal .modal-content h3{
+    margin: 0;
+}
+
+.modal-content label {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    margin-bottom: 10px;
+}
+
+.modal-content input {
+    padding: 8px;
+    font-family: 'poppins';
+}
+
+.edit-modal form .btns{
+    display: flex;
+    justify-content: space-between;
+}
+
+.modal-content .btns button {
+    margin-top: 10px;
+    width: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    border-radius: 8px;
+    background-color: rgb(96, 131, 228);
+    cursor: pointer;
+}
+.edit-modal .btns .btn-guardar{
+    color: rgb(88, 9, 153);
+}
+.edit-modal .btns .btn-guardar{
+    border: 1px solid transparent;
+    padding: 0.6em 1.2em;
+    font-size: 1em;
+    font-weight: 500;
+    font-family: inherit;
+    color: aqua;
+    cursor: pointer;
+    transition: border-color 0.25s;
+}
+.edit-modal .btns .btn-guardar:hover{
+    border-color: aqua;
+}
+.edit-modal .btns .btn-cancelar{
+    border: 1px solid transparent;
+    padding: 0.6em 1.2em;
+    font-size: 1em;
+    font-weight: 500;
+    font-family: inherit;
+    background-color: rgb(226, 13, 13);
+    color: rgb(255, 187, 0);
+    cursor: pointer;
+    transition: border-color 0.25s;
+}
+.edit-modal .btns .btn-cancelar:hover{
+    border-color: rgb(255, 187, 0);
+}

@@ -51,9 +51,35 @@ const deleteCursoByIdController = async (curso_id) => {
     }
 };
 
+const getCursosByCicloController = async (req, res) => {
+    try {
+        const { ciclo_id } = req.params;
+        
+        console.log('Received ciclo_id:', ciclo_id);
+        
+        const cursos = await Curso.findAll({
+            where: { 
+                ciclo_id: ciclo_id 
+            }
+        });
+        
+        console.log('Found courses:', cursos);
+        
+        res.status(200).json(cursos);
+    } catch (error) {
+        console.error('Detailed error obtaining courses by ciclo:', error);
+        res.status(500).json({ 
+            message: 'Error obtaining courses by ciclo',
+            error: error.message,
+            stack: error.stack
+        });
+    }
+};
+
 module.exports = {
     createCursoController,
     getAllCursosController,
     updatedCursoByIdController,
-    deleteCursoByIdController
+    deleteCursoByIdController,
+    getCursosByCicloController
 };
