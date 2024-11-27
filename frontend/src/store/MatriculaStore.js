@@ -24,6 +24,8 @@ const useMatriculaStore = create((set) => ({
   createMatricula: async (matriculaData) => {
     set({ error: null })
     try {
+      console.log('Sending Matricula Data:', JSON.stringify(matriculaData, null, 2));
+      
       const response = await api.post('/matricula', matriculaData)
       set(state => ({ 
         matriculas: [...state.matriculas, response.data]
@@ -33,8 +35,17 @@ const useMatriculaStore = create((set) => ({
       console.error('Create Matricula Error:', {
         status: error.response?.status,
         data: error.response?.data,
-        message: error.message
+        message: error.message,
+        requestData: matriculaData
       });
+      
+      // Log more detailed error information
+      if (error.response) {
+        console.error('Response Data:', error.response.data);
+        console.error('Response Status:', error.response.status);
+        console.error('Response Headers:', error.response.headers);
+      }
+      
       set({ error: error.response?.data?.message || error.message })
       throw error
     }

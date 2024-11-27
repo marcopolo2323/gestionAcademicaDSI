@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useStore from '../../../store/useStore';
+import './login.module.css';
 
 const LoginForm = () => {
   const [formData, setFormData] = useState({
@@ -82,8 +83,9 @@ const LoginForm = () => {
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="w-full max-w-md">
-        <form onSubmit={handleLogin} className="bg-white shadow-md rounded-lg px-8 pt-6 pb-8 mb-4">
+      <div className="login-container">
+        <h1>Iniciar sesión</h1>
+        <form onSubmit={handleLogin}>
           <div className="mb-4">
             <label htmlFor="username" className="block text-gray-700 text-sm font-bold mb-2">
               Usuario
@@ -95,13 +97,11 @@ const LoginForm = () => {
               value={formData.username}
               onChange={handleInputChange}
               placeholder="Ingrese su usuario"
-              className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                validationErrors.username ? 'border-red-500' : ''
-              }`}
+              className={`login-input ${validationErrors.username ? 'border-red-500' : ''}`}
               autoComplete="username"
             />
             {validationErrors.username && (
-              <p className="text-red-500 text-xs italic mt-1">{validationErrors.username}</p>
+              <p className="error-message">{validationErrors.username}</p>
             )}
           </div>
 
@@ -116,20 +116,18 @@ const LoginForm = () => {
               value={formData.password}
               onChange={handleInputChange}
               placeholder="Ingrese su contraseña"
-              className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                validationErrors.password ? 'border-red-500' : ''
-              }`}
+              className={`login-input ${validationErrors.password ? 'border-red-500' : ''}`}
               autoComplete="current-password"
             />
             {validationErrors.password && (
-              <p className="text-red-500 text-xs italic mt-1">{validationErrors.password}</p>
+              <p className="error-message">{validationErrors.password}</p>
             )}
           </div>
 
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition-colors duration-300 disabled:bg-blue-300"
+            className={`login-button ${isLoading ? 'disabled' : ''}`}
           >
             {isLoading ? (
               <div className="flex items-center justify-center">
@@ -161,8 +159,8 @@ const LoginForm = () => {
             </div>
           )}
 
-          <div className="mt-4 text-center">
-            <a href="/forgot-password" className="text-sm text-blue-500 hover:text-blue-700">
+          <div className="create-account mt-4 text-center">
+            <a href="/forgot-password" className="create-account-link hover:text-blue-700">
               ¿Olvidaste tu contraseña?
             </a>
           </div>

@@ -1,0 +1,97 @@
+/* Home.module.css */
+
+/* Estilo general para el contenedor principal */
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    min-height: 800px;
+    min-width: 1400px;
+    background-image: url('./img/bola.jpeg'); /* Cambia la ruta a tu imagen */
+    background-size: cover; /* Asegura que la imagen cubra todo el contenedor */
+    background-position: center; /* Centra la imagen */
+    font-family: 'Arial', sans-serif; /* Fuente básica */
+  }
+  
+  /* Estilo para la barra de navegación */
+  .navbar {
+    width: 100%;
+    background-color: rgba(0, 77, 122, 0.8); /* Color de fondo semi-transparente */
+    color: white; /* Color del texto en la navbar */
+    padding: 1rem; /* Espaciado interno */
+  }
+  
+  /* Estilo para el contenido principal */
+  .content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 2rem; /* Espaciado interno */
+  }
+  
+  /* Estilo para el mensaje de bienvenida */
+  .welcome {
+    text-align: center;
+    margin-bottom: 2rem; /* Margen inferior */
+  }
+  
+  .welcome h1 {
+    font-size: 2.5rem; /* Tamaño del encabezado */
+    color: #fff; /* Color del texto blanco para mejor contraste */
+  }
+  
+  .welcome p {
+    font-size: 1.2rem; /* Tamaño del párrafo */
+    color: #ddd; /* Color del texto gris claro */
+  }
+  
+  /* Estilo para el formulario de inicio de sesión */
+  .login {
+    width: 100%;
+    max-width: 400px; /* Ancho máximo del formulario */
+    background-color: rgba(242, 248, 245, 0.9); /* Fondo blanco semi-transparente */
+    border-radius: 12px; /* Bordes redondeados más suaves */
+    box-shadow: 0px 8px 20px rgba(0,0,0,0.15); /* Sombra más pronunciada */
+    padding: 2rem; /* Espaciado interno */
+    text-align: center;
+    margin: 2rem auto; /* Centrando el formulario vertical y horizontalmente */
+    transition: transform 0.3s ease; /* Efecto de transformación suave */
+}
+
+.login:hover {
+    transform: translateY(-5px); /* Efecto de elevación al pasar el mouse */
+}
+
+.login h2 {
+    font-family: 'Arial', sans-serif; /* Fuente moderna */
+    color: #333; /* Color del texto del encabezado */
+    margin-bottom: 1rem; /* Espaciado inferior del encabezado */
+}
+
+.login input[type="text"],
+.login input[type="password"] {
+    width: calc(100% - 20px); /* Ancho completo menos el padding */
+    padding: 10px; /* Espaciado interno de los campos de entrada */
+    border: 1px solid #ccc; /* Borde gris claro */
+    border-radius: 5px; /* Bordes redondeados para los campos de entrada */
+    margin-bottom: 1rem; /* Espaciado inferior entre campos */
+    font-size: 16px; /* Tamaño de fuente adecuado para la entrada */
+}
+
+.login button {
+    background-color: #28a745; /* Color verde para el botón */
+    color: white; /* Color del texto del botón */
+    border: none; /* Sin borde para el botón */
+    border-radius: 5px; /* Bordes redondeados para el botón */
+    padding: 10px 15px; /* Espaciado interno del botón */
+    cursor: pointer; /* Cambia el cursor al pasar sobre el botón */
+    font-size: 16px; /* Tamaño de fuente del botón */
+    transition: background-color 0.3s ease; /* Transición suave del color de fondo */
+}
+
+.login button:hover {
+    background-color: #218838; /* Color más oscuro al pasar el mouse sobre el botón */
+}

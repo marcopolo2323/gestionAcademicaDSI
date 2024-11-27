@@ -4,10 +4,10 @@ import { NavbarActions } from './NavbarActions';
 
 const Navbar = () => {
   return (
-    <nav className="bg-gray-800 text-white py-4">
-      <div className="container mx-auto flex justify-between items-center">
+    <nav className="navegador">
+      <div className="menu">
         <div>
-          <Link to="/" className="text-lg font-bold">
+          <Link to="/" className="link-nav">
             Home
           </Link>
         </div>

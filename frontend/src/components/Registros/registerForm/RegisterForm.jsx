@@ -157,7 +157,7 @@ const RegisterForm = () => {
         console.log('Datos estudiante a enviar:', studentData);
         await addStudent(studentData);
       } else {
-        const teacherData = {
+        const teacherData = { 
           usuario_id: usuarioResponse.usuario_id,
           dni: formData.dni.trim(),
           nombres: formData.nombres.trim(),
@@ -322,7 +322,7 @@ const RegisterForm = () => {
               <option value="">Seleccionar Ciclo</option>
               {Array.isArray(ciclos) && ciclos.map((ciclo) => (
                 <option key={ciclo.ciclo_id} value={ciclo.ciclo_id}>
-                  Ciclo {ciclo.numero_ciclo}
+                  Ciclo {ciclo.nombre}
                 </option>
               ))}
             </select>
