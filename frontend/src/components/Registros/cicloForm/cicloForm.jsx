@@ -68,14 +68,43 @@ const CicloForm = () => {
       </form>
 
       <h2>Lista de Ciclos</h2>
-      <ul>
-        {Ciclos.map((ciclo) => (
-          <li key={ciclo.ciclo_id}>
-            {`Ciclo ${ciclo.numero_ciclo} - Estado: ${ciclo.estado}`}
-            <button onClick={() => handleEdit(ciclo)}>Editar</button>
-          </li>
-        ))}
-      </ul>
+      <table>
+        <thead>
+          <tr>
+            <th>Número de Ciclo</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {Ciclos.map((ciclo) => (
+            <tr key={ciclo.ciclo_id}>
+              <td>{ciclo.numero_ciclo}</td>
+              <td>{ciclo.estado}</td>
+              <td>
+                <button onClick={() => handleEdit(ciclo)}>Editar</button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      {/* Estilos opcionales para la tabla */}
+      <style jsx>{`
+        table {
+          width: 100%;
+          border-collapse: collapse;
+        }
+        th, td {
+          border: 1px solid #ddd;
+          padding: 8px;
+          text-align: left;
+        }
+        th {
+          background-color: #f2f2f2;
+        }
+      `}</style>
+
     </div>
   );
 };

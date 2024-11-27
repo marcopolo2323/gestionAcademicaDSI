@@ -25,7 +25,7 @@ const Usuario = sequelize.define('Usuario', {
         allowNull: false,
         references: {
             model: 'ROLES',
-            key: 'rol_id'
+            key: 'rol_id',
         }
     },
     ultimo_login: {

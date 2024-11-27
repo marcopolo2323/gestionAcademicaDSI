@@ -35,6 +35,7 @@ const RegisterForm = () => {
       try {
         await fetchCiclos();
         await fetchRoles();
+        console.log('Roles cargados:', roles); 
       } catch (err) {
         console.error('Error loading data:', err);
         setError('Error al cargar los datos');
