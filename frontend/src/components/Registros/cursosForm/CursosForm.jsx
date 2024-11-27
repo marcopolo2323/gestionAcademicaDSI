@@ -73,41 +73,48 @@ const CursoForm = () => {
     setError(null);
 
     try {
-      // Convert numeric fields to integers
-      const cursoData = {
-        ...formData,
-        plan_id: parseInt(formData.plan_id),
-        profesor_id: parseInt(formData.profesor_id),
-        horario_id: parseInt(formData.horario_id),
-        ciclo_id: parseInt(formData.ciclo_id),
-        cupo_maximo: parseInt(formData.cupo_maximo)
-      };
+        // Asegúrate de que todos los campos sean del tipo correcto
+        const cursoData = {
+            plan_id: Number(formData.plan_id),
+            profesor_id: Number(formData.profesor_id),
+            horario_id: Number(formData.horario_id),
+            ciclo_id: Number(formData.ciclo_id),
+            nombre: formData.nombre,
+            codigo: formData.codigo,
+            periodo_academico: formData.periodo_academico,
+            paralelo: formData.paralelo,
+            cupo_maximo: Number(formData.cupo_maximo),
+            aula: formData.aula || null,
+            estado: formData.estado
+        };
 
-      await addCurso(cursoData);
+        console.log('Enviando datos del curso:', cursoData);
 
-      // Reset form after successful submission
-      setFormData({
-        plan_id: '',
-        profesor_id: '',
-        horario_id: '',
-        ciclo_id: '',
-        nombre: '',
-        codigo: '',
-        periodo_academico: '',
-        paralelo: '',
-        cupo_maximo: '',
-        aula: '',
-        estado: 'ACTIVO'
-      });
+        await addCurso(cursoData);
 
-      alert('Curso creado exitosamente');
+        // Reset form after successful submission
+        setFormData({
+            plan_id: '',
+            profesor_id: '',
+            horario_id: '',
+            ciclo_id: '',
+            nombre: '',
+            codigo: '',
+            periodo_academico: '',
+            paralelo: '',
+            cupo_maximo: '',
+            aula: '',
+            estado: 'ACTIVO'
+        });
+
+        alert('Curso creado exitosamente');
     } catch (err) {
-      setError(err.message || 'Error al crear el curso');
-      console.error('Error:', err);
+        console.error('Error al crear curso:', err);
+        setError(err.message || 'Error al crear el curso');
     } finally {
-      setLoading(false);
+        setLoading(false);
     }
-  };
+};
 
   return (
     <form onSubmit={handleSubmit} className="max-w-md mx-auto p-4">

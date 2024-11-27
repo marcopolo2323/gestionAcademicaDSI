@@ -1,14 +1,28 @@
 const Curso = require('../models/Curso'); // Asegúrate de que el modelo de Curso esté definido correctamente
 
 // Crea un nuevo curso
-const createCursoController = async ({curso_id, plan_id, profesor_id,horario_id,nombre,codigo, periodo_academico, paralelo, cupo_maximo, aula, estado }) => {
-    try { 
-        const newCurso = await Curso.create({curso_id, plan_id, profesor_id,horario_id,nombre,codigo, periodo_academico, paralelo, cupo_maximo, aula, estado });
-        return newCurso;
-    } catch (error) {
-        throw new Error(error.message);
-    }
-};
+const createCursoController = async (cursoData) => {
+        try {
+            // Validar datos antes de crear
+            const newCurso = await Curso.create({
+                plan_id: cursoData.plan_id,
+                profesor_id: cursoData.profesor_id,
+                horario_id: cursoData.horario_id,
+                ciclo_id: cursoData.ciclo_id,
+                nombre: cursoData.nombre,
+                codigo: cursoData.codigo,
+                periodo_academico: cursoData.periodo_academico,
+                paralelo: cursoData.paralelo,
+                cupo_maximo: cursoData.cupo_maximo,
+                aula: cursoData.aula || null,
+                estado: cursoData.estado || 'ACTIVO'
+            });
+            return newCurso;
+        } catch (error) {
+            console.error('Error al crear curso:', error);
+            throw new Error(error.message);
+        }
+    };
 
 // Obtener todos los cursos
 const getAllCursosController = async () => {

@@ -31,34 +31,38 @@ const useTeacherStore = create((set) => ({
   fetchTeachers: async () => {
     set({ isLoading: true, error: null });
     try {
-      const response = await api.get('/profesor');
-      console.log('Teachers full response:', response);
-      console.log('Teachers response data:', response.data);
-      
-      // Ensure you're setting the correct data
-      // Check if response.data is an array or has a data property
-      const teachersData = Array.isArray(response.data) 
-        ? response.data 
-        : response.data.data || [];
+        const response = await api.get('/profesor');
+        console.log('Teachers full response:', response);
+        console.log('Teachers response data:', response.data);
+        
+        // Verificar la estructura de los datos
+        const teachersData = response.data.map(teacher => ({
+            profesor_id: teacher.profesor_id,
+            nombre: teacher.nombre,
+            apellido: teacher.apellido,
+            // otros campos necesarios
+        }));
 
-      console.log('Processed teachers data:', teachersData);
-      
-      set({ 
-        teachers: teachersData,
-        isLoading: false 
-      });
-      
-      return teachersData;
+        console.log('Processed teachers data:', teachersData);
+        
+        set({ 
+            teachers: teachersData,
+            isLoading: false 
+        });
+        
+        return teachersData;
     } catch (error) {
-      console.error('Error fetching teachers:', error);
-      set({ 
-        error: error.message, 
-        isLoading: false,
-        teachers: [] 
-      });
-      throw error;
+        console.error('Error fetching teachers:', error);
+        set({ 
+            error: error.message, 
+            isLoading: false,
+            teachers: [] 
+        });
+        throw error;
     }
-  },
+},
+
+// Mismo enfoque para fetchCiclos
 
 
   updateTeacher: async (id, updateData) => {

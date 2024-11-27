@@ -30,6 +30,11 @@ const useMatriculaStore = create((set) => ({
       }))
       return response.data
     } catch (error) {
+      console.error('Create Matricula Error:', {
+        status: error.response?.status,
+        data: error.response?.data,
+        message: error.message
+      });
       set({ error: error.response?.data?.message || error.message })
       throw error
     }

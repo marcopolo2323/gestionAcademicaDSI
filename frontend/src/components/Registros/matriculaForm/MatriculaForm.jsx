@@ -14,7 +14,7 @@ const MatriculaManagement = () => {
     createMatricula, 
     updateMatricula,
     deleteMatricula
-  } = useMatriculaStore();
+  } = useMatriculaStore(); 
   
   const { students, fetchStudents, fetchStudentsByCiclo } = useStudentStore();
   const { cursos, fetchCursos, fetchCursosByCiclo, cursosEnCiclo } = useCursoStore();
@@ -189,7 +189,7 @@ const MatriculaManagement = () => {
                     key={ciclo.ciclo_id} 
                     value={ciclo.ciclo_id}
                   >
-                    {ciclo.numero_ciclo}
+                    {ciclo.nombre}
                   </option>
                 ))}
               </select>

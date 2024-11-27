@@ -4,7 +4,7 @@ const sequelize = require('../db');
 const Profesor = sequelize.define('Profesor', {
     profesor_id: {
         type: DataTypes.INTEGER,
-        primaryKey: true,
+        primaryKey: true, 
         autoIncrement: true
     },
     usuario_id: {

@@ -4,7 +4,7 @@ const sequelize = require('../db');
 const Ciclo = sequelize.define('Ciclo', {
     ciclo_id: {
         type: DataTypes.INTEGER,
-        primaryKey: true,
+        primaryKey: true, 
         autoIncrement: true
     },
     numero_ciclo: {
